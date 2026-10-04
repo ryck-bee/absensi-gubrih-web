@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hari Libur — Absensi SDN Gubrih 1</title>
+  <meta name="author" content="Riko Putra Dwi Susanto">
+  <meta name="description" content="Sistem absensi wajah guru SDN Gubrih 1 — Skripsi Teknik Informatika UMM Jember">
+
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__brand">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="img/logo.png" alt="Logo SDN Gubrih 1">
+        </span>
+        <span class="brand-word">SDN GUBRIH 1</span>
+      </div>
+
+      <nav class="sidebar__scroll" aria-label="Dashboard sections">
+        <div class="nav-group">
+          <p class="nav-group__label">Menu</p>
+          <a class="nav-link" href="index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Overview</span>
+          </a>
+          <a class="nav-link" href="riwayat-absen.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span>Riwayat Absen</span>
+          </a>
+          <a class="nav-link" href="guru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Data Guru</span>
+          </a>
+          <a class="nav-link is-active" href="hari-libur.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+            <span>Hari Libur</span>
+          </a>
+          <a class="nav-link" href="admin-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span>Riwayat Perubahan Admin</span>
+          </a>
+        </div>
+
+        <div class="nav-group" data-role="super-admin">
+          <p class="nav-group__label">Super Admin</p>
+          <a class="nav-link" href="admin/debug-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M3 10h3M18 10h3M4 16h2M18 16h2M4 20l2-2M18 18l2 2M4 12l2 2M18 14l2-2"/></svg>
+            <span>Debug Log</span>
+          </a>
+          <a class="nav-link" href="admin/device-management.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Device Management</span>
+          </a>
+          <a class="nav-link" href="admin/system-health.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            <span>System Health</span>
+          </a>
+          <a class="nav-link" href="admin/statistik-ringkas.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+            <span>Statistik Ringkas</span>
+          </a>
+          <a class="nav-link" href="admin/filter-data.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+            <span>Filter Data Global</span>
+          </a>
+          <a class="nav-link" href="admin/embedding-viewer.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span>Embedding Viewer</span>
+          </a>
+          <a class="nav-link" href="admin/foto-raw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Foto Raw per User</span>
+          </a>
+          <a class="nav-link" href="admin/backup-center.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M12 16v4M9 17l3 3 3-3"/></svg>
+            <span>Backup Center</span>
+          </a>
+        </div>
+      </nav>
+
+      
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-btn topbar__menu" id="sidebarToggle" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+
+        <div class="searchbar" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" aria-label="Search" placeholder="Cari...">
+          <span class="kbd" aria-hidden="true">⌘K</span>
+        </div>
+
+        <div class="topbar__right">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          </button>
+
+          <div class="usermenu">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="icon-btn__dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifMenu" role="menu" aria-label="Notifications">
+              <div class="dropdown__head">
+                <h4>Notifications</h4>
+                <a href="#">Mark all read</a>
+              </div>
+              <div class="dropdown__body">
+                <div class="notif" role="menuitem">
+                  <span class="notif__ic is-success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M15.5 9.5A2.5 2.5 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2.5 2.5 0 0 1-2.5-1.5"/></svg></span>
+                  <div><p><b>Payout settled</b> — $18,240 arrived.</p><time>3 hours ago</time></div>
+                </div>
+              </div>
+              <div class="dropdown__foot"><a href="#">View all activity</a></div>
+            </div>
+          </div>
+
+          <div class="usermenu">
+            <button class="usermenu__btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar"></span>
+              <span class="usermenu__meta">
+                <b id="userNameTop"></b>
+                <small id="userRoleTop"></small>
+              </span>
+              <svg class="usermenu__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="dropdown dropdown--user" id="userMenu" role="menu" aria-label="Account">
+              <div class="dropdown__head">
+                <div>
+                  <h4 id="userNameDropdown"></h4>
+                  <p class="dropdown__email" id="userEmailDropdown"></p>
+                </div>
+              </div>
+              <div class="menu-list">
+                
+                <a href="#" role="menuitem" class="is-danger" onclick="logout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="main">
+
+        <section class="pagehead" aria-label="Page header">
+          <div>
+            <p class="pagehead__crumbs"><a href="index.html" id="schoolCrumb">SDN Gubrih 1</a> / Hari Libur</p>
+            <h1>Hari Libur</h1>
+            <p>Kelola hari libur nasional dan hari libur sekolah.</p>
+          </div>
+        </section>
+
+        <div class="grid" style="grid-template-columns: 1fr 380px; gap: 20px; align-items: start;">
+
+          <section class="card" aria-label="Daftar hari libur">
+            <div class="card__head">
+              <div><h3>Daftar Hari Libur</h3><p id="liburCount">Memuat...</p></div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <select id="filterTag" class="input input--bare" style="width:auto; height:36px; padding:0 10px; font-size:0.85rem;">
+                  <option value="">Semua Jenis</option>
+                  <option value="Libur Nasional">Nasional</option>
+                  <option value="Libur Semester">Semester</option>
+                  <option value="Libur Sekolah">Sekolah</option>
+                  <option value="custom">Custom</option>
+                </select>
+                <input type="text" id="searchBox" class="input input--bare" placeholder="Cari keterangan..." style="width:200px; height:36px; padding:0 10px; font-size:0.85rem;">
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="dtable">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width:40px;"><input type="checkbox" id="checkAll"></th>
+                    <th scope="col">Tanggal</th>
+                    <th scope="col">Hari</th>
+                    <th scope="col">Jenis</th>
+                    <th scope="col">Keterangan</th>
+                    <th class="th-right" scope="col">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="liburTableBody">
+                  <tr><td colspan="6" style="text-align:center;padding:24px;">Memuat data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="bulkBar" style="display:none; padding:12px 20px; border-top:1px solid var(--border); background:var(--surface-2);">
+              <span id="bulkCount" style="font-size:0.85rem; margin-right:12px;"></span>
+              <button class="btn btn--ghost" id="btnBulkDelete" type="button" style="padding:6px 12px; font-size:0.82rem; color:var(--danger);">
+                Hapus Terpilih
+              </button>
+            </div>
+          </section>
+
+          <section class="card" aria-label="Tambah hari libur">
+            <div class="card__head">
+              <div><h3>Tambah Hari Libur</h3></div>
+            </div>
+            <div class="card__body">
+              <div class="field">
+                <label for="liburMulai">Tanggal Mulai</label>
+                <input type="date" id="liburMulai" class="input input--bare">
+              </div>
+              <div class="field">
+                <label for="liburSelesai">Tanggal Selesai</label>
+                <input type="date" id="liburSelesai" class="input input--bare">
+              </div>
+              <div class="field">
+                <label for="liburTag">Jenis Libur</label>
+                <select id="liburTag" class="input input--bare">
+                  <option value="Libur Nasional">Nasional</option>
+                  <option value="Libur Semester">Semester</option>
+                  <option value="Libur Sekolah">Sekolah</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+              <div class="field" id="customWrap" style="display:none;">
+                <label for="liburCustom">Keterangan Custom</label>
+                <input type="text" id="liburCustom" class="input input--bare" placeholder="Misal: Hari Kemerdekaan RI">
+              </div>
+              <button class="btn btn--primary btn--block" id="btnSimpanLibur" type="button" style="margin-top: 8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 5v14M5 12h14"/></svg>
+                <span>Tambah Hari Libur</span>
+              </button>
+              <p id="liburMessage" style="margin-top:12px;font-size:0.85rem;"></p>
+            </div>
+          </section>
+
+        </div>
+      </main>
+
+      <footer class="app-foot">
+  <span>© 2026 Absensi SDN Gubrih 1 · Riko Putra Dwi Susanto</span>
+  <nav class="app-foot__links" aria-label="Footer">
+    <a href="https://uicookies.com/downloads/console/">Lisensi Template (uiCookies)</a>
+  </nav>
+</footer>
+
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+    </div>
+  </div>
+
+  <script>
+    (async () => {
+      const session = await requireLogin();
+      if (!session) return;
+      initGlobalSearch();
+      initNotifDropdown();
+      applyRoleBasedSidebar();
+
+      const { data: myProfile } = await supabaseClient
+        .from('profiles')
+        .select('nama_lengkap, role')
+        .eq('id', session.user.id)
+        .single();
+
+      function avatarHtml(nama, size = 32) {
+        const initial = nama.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        const bg = `hsl(${hue}, 45%, 45%)`;
+        return `<span style="display:inline-grid;place-items:center;width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:#fff;font-weight:600;font-size:${size * 0.4}px;flex:0 0 auto;">${initial}</span>`;
+      }
+
+      if (myProfile) {
+        const nama = myProfile.nama_lengkap || 'Pengguna';
+        const role = myProfile.role === 'super_admin' ? 'Super Admin'
+                    : myProfile.role === 'admin_sekolah' ? 'Admin Sekolah'
+                    : 'Guru';
+
+        document.getElementById('userAvatar').innerHTML = avatarHtml(nama);
+        document.getElementById('userNameTop').textContent = nama;
+        document.getElementById('userRoleTop').textContent = role;
+        document.getElementById('userNameDropdown').textContent = nama;
+        document.getElementById('userEmailDropdown').textContent = session.user.email || '-';
+      }
+
+      function formatTanggal(iso) {
+        const d = new Date(iso + 'T00:00:00');
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+      }
+      function namaHari(iso) {
+        const d = new Date(iso + 'T00:00:00');
+        return d.toLocaleDateString('id-ID', { weekday: 'long' });
+      }
+      function tagLabel(ket) {
+        if (ket === 'Libur Nasional') return 'Nasional';
+        if (ket === 'Libur Semester') return 'Semester';
+        if (ket === 'Libur Sekolah') return 'Sekolah';
+        return 'Custom';
+      }
+
+      const tbody = document.getElementById('liburTableBody');
+      const countEl = document.getElementById('liburCount');
+      const msgEl = document.getElementById('liburMessage');
+      const customWrap = document.getElementById('customWrap');
+      const customInput = document.getElementById('liburCustom');
+      const tagSelect = document.getElementById('liburTag');
+      const filterTag = document.getElementById('filterTag');
+      const searchBox = document.getElementById('searchBox');
+      const bulkBar = document.getElementById('bulkBar');
+      const bulkCount = document.getElementById('bulkCount');
+      const checkAll = document.getElementById('checkAll');
+
+      let allData = [];
+      const selected = new Set();
+
+      tagSelect.addEventListener('change', () => {
+        customWrap.style.display = tagSelect.value === 'custom' ? 'block' : 'none';
+        customInput.value = '';
+      });
+
+      async function loadLibur() {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;">Memuat...</td></tr>`;
+        const { data, error } = await supabaseClient
+          .from('hari_libur')
+          .select('id, tanggal, keterangan')
+          .order('tanggal', { ascending: true });
+
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#c00;">Error: ${error.message}</td></tr>`;
+          countEl.textContent = '—';
+          return;
+        }
+        allData = data || [];
+        renderTable();
+      }
+
+      function renderTable() {
+        const tag = filterTag.value;
+        const search = searchBox.value.trim().toLowerCase();
+        const presets = ['Libur Nasional', 'Libur Semester', 'Libur Sekolah'];
+
+        let filtered = allData;
+
+        if (tag === 'custom') {
+          filtered = filtered.filter(r => !presets.includes(r.keterangan));
+        } else if (tag) {
+          filtered = filtered.filter(r => r.keterangan === tag);
+        }
+
+        if (search) {
+          filtered = filtered.filter(r => (r.keterangan || '').toLowerCase().includes(search));
+        }
+
+        countEl.textContent = `${filtered.length} dari ${allData.length} hari libur`;
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;">Nggak ada yang cocok.</td></tr>`;
+          updateBulkBar();
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(r => `
+          <tr>
+            <td><input type="checkbox" data-id="${r.id}" ${selected.has(r.id) ? 'checked' : ''}></td>
+            <td><b>${formatTanggal(r.tanggal)}</b></td>
+            <td>${namaHari(r.tanggal)}</td>
+            <td>${tagLabel(r.keterangan)}</td>
+            <td>${r.keterangan || '-'}</td>
+            <td class="num">
+              <button class="btn btn--ghost" style="padding: 4px 10px; font-size: 0.8rem;" data-del="${r.id}">Hapus</button>
+            </td>
+          </tr>
+        `).join('');
+
+        tbody.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const id = e.target.getAttribute('data-id');
+            if (e.target.checked) selected.add(id); else selected.delete(id);
+            updateBulkBar();
+          });
+        });
+
+        tbody.querySelectorAll('button[data-del]').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-del');
+            if (!confirm('Hapus hari libur ini?')) return;
+            const { error } = await supabaseClient.from('hari_libur').delete().eq('id', id);
+            if (error) { alert('Gagal hapus: ' + error.message); return; }
+            selected.delete(id);
+            loadLibur();
+          });
+        });
+
+        updateBulkBar();
+      }
+
+      function updateBulkBar() {
+        if (selected.size > 0) {
+          bulkBar.style.display = 'block';
+          bulkCount.textContent = `${selected.size} dipilih`;
+        } else {
+          bulkBar.style.display = 'none';
+        }
+      }
+
+      checkAll.addEventListener('change', (e) => {
+        tbody.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb => {
+          cb.checked = e.target.checked;
+          const id = cb.getAttribute('data-id');
+          if (e.target.checked) selected.add(id); else selected.delete(id);
+        });
+        updateBulkBar();
+      });
+
+      document.getElementById('btnBulkDelete').addEventListener('click', async () => {
+        if (selected.size === 0) return;
+        if (!confirm(`Hapus ${selected.size} hari libur?`)) return;
+        const ids = [...selected];
+        const { error } = await supabaseClient.from('hari_libur').delete().in('id', ids);
+        if (error) { alert('Gagal: ' + error.message); return; }
+        selected.clear();
+        checkAll.checked = false;
+        loadLibur();
+      });
+
+      filterTag.addEventListener('change', renderTable);
+      searchBox.addEventListener('input', renderTable);
+
+      document.getElementById('btnSimpanLibur').addEventListener('click', async () => {
+        const mulai = document.getElementById('liburMulai').value;
+        const selesai = document.getElementById('liburSelesai').value;
+        const tag = tagSelect.value;
+        const customText = customInput.value.trim();
+
+        msgEl.textContent = '';
+        msgEl.style.color = '';
+
+        if (!mulai || !selesai) {
+          msgEl.textContent = 'Isi tanggal mulai dan selesai.';
+          msgEl.style.color = 'var(--danger)';
+          return;
+        }
+        if (mulai > selesai) {
+          msgEl.textContent = 'Tanggal mulai harus sebelum selesai.';
+          msgEl.style.color = 'var(--danger)';
+          return;
+        }
+
+        let keterangan;
+        if (tag === 'custom') {
+          if (!customText) {
+            msgEl.textContent = 'Isi keterangan custom.';
+            msgEl.style.color = 'var(--danger)';
+            return;
+          }
+          keterangan = customText;
+        } else {
+          keterangan = tag;
+        }
+
+        const dates = [];
+        const d = new Date(mulai + 'T00:00:00');
+        const end = new Date(selesai + 'T00:00:00');
+        while (d <= end) {
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          dates.push(`${yyyy}-${mm}-${dd}`);
+          d.setDate(d.getDate() + 1);
+        }
+
+        const { data: existing } = await supabaseClient
+          .from('hari_libur').select('tanggal').in('tanggal', dates);
+        const existingSet = new Set((existing || []).map(r => r.tanggal));
+        const toInsert = dates.filter(t => !existingSet.has(t));
+
+        if (toInsert.length === 0) {
+          msgEl.textContent = 'Semua tanggal di range sudah ada.';
+          msgEl.style.color = 'var(--warning)';
+          return;
+        }
+
+        const rows = toInsert.map(t => ({
+          tanggal: t,
+          keterangan: keterangan,
+          sekolah_id: 'SDN_GUBRIH_1'
+        }));
+
+        const { error } = await supabaseClient.from('hari_libur').insert(rows);
+
+        if (error) {
+          msgEl.textContent = 'Gagal simpan: ' + error.message;
+          msgEl.style.color = 'var(--danger)';
+          return;
+        }
+
+        const skipped = dates.length - toInsert.length;
+        msgEl.textContent = skipped > 0
+          ? `${toInsert.length} ditambah, ${skipped} dilewati.`
+          : `${toInsert.length} hari libur ditambah.`;
+        msgEl.style.color = 'var(--success)';
+
+        document.getElementById('liburMulai').value = '';
+        document.getElementById('liburSelesai').value = '';
+        customInput.value = '';
+        tagSelect.value = 'Libur Nasional';
+        customWrap.style.display = 'none';
+        loadLibur();
+      });
+
+      await loadLibur();
+    })();
+  </script>
+</body>
+</html>

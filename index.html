@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overview — Absensi SDN Gubrih 1</title>
+  <meta name="author" content="Riko Putra Dwi Susanto">
+  <meta name="description" content="Sistem absensi wajah guru SDN Gubrih 1 — Skripsi Teknik Informatika UMM Jember">
+
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__brand">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="img/logo.png" alt="Logo SDN Gubrih 1">
+        </span>
+        <span class="brand-word">SDN GUBRIH 1</span>
+      </div>
+
+      <nav class="sidebar__scroll" aria-label="Dashboard sections">
+        <div class="nav-group">
+          <p class="nav-group__label">Menu</p>
+          <a class="nav-link is-active" href="index.html" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Overview</span>
+          </a>
+          <a class="nav-link" href="riwayat-absen.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span>Riwayat Absen</span>
+          </a>
+          <a class="nav-link" href="guru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Data Guru</span>
+          </a>
+          <a class="nav-link" href="hari-libur.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+            <span>Hari Libur</span>
+          </a>
+          <a class="nav-link" href="admin-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span>Riwayat Perubahan Admin</span>
+          </a>
+        </div>
+
+        <div class="nav-group" data-role="super-admin">
+          <p class="nav-group__label">Super Admin</p>
+          <a class="nav-link" href="admin/debug-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M3 10h3M18 10h3M4 16h2M18 16h2M4 20l2-2M18 18l2 2M4 12l2 2M18 14l2-2"/></svg>
+            <span>Debug Log</span>
+          </a>
+          <a class="nav-link" href="admin/device-management.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Device Management</span>
+          </a>
+          <a class="nav-link" href="admin/system-health.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            <span>System Health</span>
+          </a>
+          <a class="nav-link" href="admin/statistik-ringkas.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+            <span>Statistik Ringkas</span>
+          </a>
+          <a class="nav-link" href="admin/filter-data.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+            <span>Filter Data Global</span>
+          </a>
+          <a class="nav-link" href="admin/embedding-viewer.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span>Embedding Viewer</span>
+          </a>
+          <a class="nav-link" href="admin/foto-raw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Foto Raw per User</span>
+          </a>
+          <a class="nav-link" href="admin/backup-center.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M12 16v4M9 17l3 3 3-3"/></svg>
+            <span>Backup Center</span>
+          </a>
+        </div>
+      </nav>
+
+      
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-btn topbar__menu" id="sidebarToggle" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+
+        <div class="searchbar" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" aria-label="Search" placeholder="Cari...">
+          <span class="kbd" aria-hidden="true">⌘K</span>
+        </div>
+
+        <div class="topbar__right">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          </button>
+
+          <div class="usermenu">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="icon-btn__dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifMenu" role="menu">
+              <div class="dropdown__head"><h4>Notifications</h4><a href="#">Mark all read</a></div>
+              <div class="dropdown__body">
+                <div class="notif" role="menuitem">
+                  <span class="notif__ic is-success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M15.5 9.5A2.5 2.5 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2.5 2.5 0 0 1-2.5-1.5"/></svg></span>
+                  <div><p><b>Absen masuk</b> — Guru A baru saja absen.</p><time>2 menit lalu</time></div>
+                </div>
+              </div>
+              <div class="dropdown__foot"><a href="#">Lihat semua</a></div>
+            </div>
+          </div>
+
+          <div class="usermenu">
+            <button class="usermenu__btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar"></span>
+              <span class="usermenu__meta">
+                <b id="userNameTop"></b>
+                <small id="userRoleTop"></small>
+              </span>
+              <svg class="usermenu__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="dropdown dropdown--user" id="userMenu" role="menu">
+              <div class="dropdown__head">
+                <div>
+                  <h4 id="userNameDropdown"></h4>
+                  <p class="dropdown__email" id="userEmailDropdown"></p>
+                </div>
+              </div>
+              <div class="menu-list">
+                <a href="#" role="menuitem" class="is-danger" onclick="logout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Keluar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="main">
+
+        <section class="pagehead" aria-label="Page header">
+          <div>
+            <p class="pagehead__crumbs"><a href="index.html" id="schoolCrumb">SDN Gubrih 1</a> / Overview</p>
+            <h1 id="welcomeName">Selamat Datang</h1>
+            <p id="todayText">Memuat tanggal...</p>
+          </div>
+          <div class="pagehead__actions">
+            <button class="btn btn--ghost" id="btnRefresh" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- KPI stat cards -->
+        <section class="grid kpis" aria-label="Key metrics">
+          <!-- 1. Hadir Hari Ini -->
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            </div>
+            <div>
+              <p class="kpi__label">Hadir Hari Ini</p>
+              <div class="kpi__value tnum" id="kpiHadir">0</div>
+            </div>
+            <div class="kpi__row">
+              <span class="kpi__delta up" id="kpiHadirSub" style="color:var(--muted);font-weight:500;">memuat...</span>
+            </div>
+          </article>
+
+          <!-- 2. Rata-rata Jam Masuk -->
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+            </div>
+            <div>
+              <p class="kpi__label">Rata-rata Jam Masuk</p>
+              <div class="kpi__value tnum" id="kpiAvgJam">—</div>
+            </div>
+            <div class="kpi__row">
+              <span class="kpi__delta up" id="kpiAvgJamSub" style="color:var(--muted);font-weight:500;">dari absen hari ini</span>
+            </div>
+          </article>
+
+          <!-- 3. Terlambat -->
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+            </div>
+            <div>
+              <p class="kpi__label">Terlambat</p>
+              <div class="kpi__value tnum" id="kpiTelat">0</div>
+            </div>
+            <div class="kpi__row">
+              <span class="kpi__delta up" id="kpiTelatSub" style="color:var(--muted);font-weight:500;">lewat 07:30</span>
+            </div>
+          </article>
+
+          <!-- 4. Absen Terbaru (list + countdown) -->
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+            </div>
+            <div>
+              <p class="kpi__label">Absen Terbaru</p>
+              <div id="kpiRecentList" style="margin-top:8px; font-size:0.82rem;"></div>
+            </div>
+          </article>
+        </section>
+
+        <!-- Charts -->
+        <section class="grid charts" aria-label="Performance charts">
+          <div class="card">
+            <div class="card__head">
+              <div>
+                <h3>Tren Euclidean Distance</h3>
+                <p>Rata-rata <code>match_distance</code> per hari (30 hari terakhir)</p>
+              </div>
+              <div class="chart-legend-inline" aria-hidden="true">
+                <span><i style="background:var(--legend-best);"></i>Terdekat</span>
+                <span><i style="background:var(--legend-avg);"></i>Rata-rata</span>
+                <span><i style="background:var(--legend-worst);"></i>Terjauh</span>
+              </div>
+            </div>
+            <div class="card__body">
+              <div class="chart-wrap" style="height:320px;">
+                <canvas id="euclideanChart" role="img" aria-label="Line chart tren match distance"></canvas>
+              </div>
+              <div id="chartSliderWrap" style="display:none; margin-top:16px;">
+                <input type="range" id="chartSlider" min="0" max="0" value="0"
+                       style="width:100%; accent-color:var(--accent);">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:6px;">
+                  <span id="chartRangeLabel">Memuat...</span>
+                  <span id="chartRangeTotal"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card__head">
+              <div><h3>Jam Absen Hari Ini</h3><p>Distribusi waktu kedatangan guru</p></div>
+            </div>
+            <div class="card__body">
+              <div class="chart-wrap chart-wrap--donut">
+                <canvas id="jamChart" role="img" aria-label="Donut chart distribusi jam absen"></canvas>
+              </div>
+              <ul class="legend" id="jamLegend">
+                <li><span class="legend__name">Memuat...</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recent orders table -->
+        <section class="card" aria-label="Absensi hari ini">
+          <div class="card__head">
+            <div><h3>Absensi Hari Ini</h3><p>Daftar kehadiran guru</p></div>
+            <a class="btn btn--ghost" href="riwayat-absen.html">Lihat Riwayat</a>
+          </div>
+          <div class="table-scroll">
+            <table class="dtable" id="absenTable">
+              <thead>
+                <tr>
+                  <th scope="col">Nama</th>
+                  <th scope="col">NIP</th>
+                  <th scope="col">Jam Absen</th>
+                  <th scope="col">Jarak GPS</th>
+                  <th scope="col">Status</th>
+                  <th class="th-right" scope="col">Match</th>
+                </tr>
+              </thead>
+              <tbody id="absenTableBody">
+                <tr><td colspan="6" style="text-align:center;padding:24px;">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="app-foot">
+  <span>© 2026 Absensi SDN Gubrih 1 · Riko Putra Dwi Susanto</span>
+  <nav class="app-foot__links" aria-label="Footer">
+    <a href="https://uicookies.com/downloads/console/">Lisensi Template (uiCookies)</a>
+  </nav>
+</footer>
+
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    (async () => {
+      const session = await requireLogin();
+      if (!session) return;
+      initGlobalSearch();
+      initNotifDropdown();
+      applyRoleBasedSidebar();
+
+      // ===== HELPER =====
+      function formatWIB(iso) {
+        return new Date(iso).toLocaleTimeString('id-ID', {
+          hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+        });
+      }
+      function todayWIB() {
+        return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      }
+      function dateOffsetWIB(offsetDays) {
+        const d = new Date();
+        d.setDate(d.getDate() + offsetDays);
+        return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      }
+      function timeAgo(iso) {
+        const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+        if (diff < 60) return `${diff} dtk lalu`;
+        if (diff < 3600) return `${Math.floor(diff / 60)} mnt lalu`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
+        return `${Math.floor(diff / 86400)} hari lalu`;
+      }
+      function dateLabelShort(d) {
+        const dt = new Date(d + 'T00:00:00');
+        return dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+      }
+      function dateLabelLong(d) {
+        const dt = new Date(d + 'T00:00:00');
+        return dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+      }
+
+      // ===== ISI PROFIL =====
+      const { data: myProfile } = await supabaseClient
+        .from('profiles')
+        .select('nama_lengkap, role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (myProfile) {
+        const nama = myProfile.nama_lengkap || 'Pengguna';
+        const role = myProfile.role === 'super_admin' ? 'Super Admin'
+                    : myProfile.role === 'admin_sekolah' ? 'Admin Sekolah'
+                    : 'Guru';
+
+        const jamNum = parseInt(new Date().toLocaleString('en-US', {
+          timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false
+        }));
+        const sapaan = jamNum < 11 ? 'Selamat pagi'
+                      : jamNum < 15 ? 'Selamat siang'
+                      : jamNum < 18 ? 'Selamat sore'
+                      : 'Selamat malam';
+
+        document.getElementById('userAvatar').innerHTML = avatarHtml(nama);
+        document.getElementById('userNameTop').textContent = nama;
+        document.getElementById('userRoleTop').textContent = role;
+        document.getElementById('userNameDropdown').textContent = nama;
+        document.getElementById('userEmailDropdown').textContent = session.user.email || '-';
+        document.getElementById('welcomeName').textContent = `${sapaan}, ${nama.split(' ')[0]}`;
+      }
+
+      function avatarHtml(nama, size = 32) {
+        const initial = nama.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        const bg = `hsl(${hue}, 45%, 45%)`;
+        return `<span style="display:inline-grid;place-items:center;width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:#fff;font-weight:600;font-size:${size * 0.4}px;flex:0 0 auto;">${initial}</span>`;
+      }
+
+      const today = todayWIB();
+      document.getElementById('todayText').textContent = new Date().toLocaleDateString('id-ID', {
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
+        timeZone: 'Asia/Jakarta'
+      });
+
+      // ===== FETCH ALL DATA =====
+      const [attRes, sessRes, guruRes] = await Promise.all([
+        supabaseClient.from('attendance')
+          .select('user_id, recorded_date, recorded_at, status, is_late, match_distance, is_izin, distance_meters, izin_type')
+          .order('recorded_at', { ascending: false }),
+        supabaseClient.from('session_logs')
+          .select('user_id, started_at, final_status'),
+        supabaseClient.from('profiles')
+          .select('id', { count: 'exact', head: true })
+          .eq('role', 'guru').eq('aktif', true)
+      ]);
+
+      const totalGuru = guruRes.count || 0;
+      const allAtt = attRes.data || [];
+      const allSess = sessRes.data || [];
+
+      // ===== DATA HARI INI =====
+      const attToday = allAtt.filter(a => a.recorded_date === today);
+      const validToday = attToday.filter(a => a.status === 'VALID' && !a.is_izin);
+      const terlambat = validToday.filter(a => a.is_late);
+
+      // KPI 1: Hadir
+      document.getElementById('kpiHadir').textContent = validToday.length;
+      document.getElementById('kpiHadirSub').textContent = `dari ${totalGuru} guru`;
+
+      // KPI 2: Rata-rata jam
+      let avgJam = '—';
+      if (validToday.length > 0) {
+        const totalMin = validToday.reduce((s, a) => {
+          const t = new Date(a.recorded_at).toLocaleTimeString('en-GB', {
+            hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+          }).split(':');
+          return s + parseInt(t[0]) * 60 + parseInt(t[1]);
+        }, 0);
+        const avg = Math.round(totalMin / validToday.length);
+        avgJam = `${String(Math.floor(avg / 60)).padStart(2, '0')}:${String(avg % 60).padStart(2, '0')}`;
+      }
+      document.getElementById('kpiAvgJam').textContent = avgJam;
+
+      // KPI 3: Terlambat
+      document.getElementById('kpiTelat').textContent = terlambat.length;
+
+      // KPI 4: Absen Terbaru
+      const recentBox = document.getElementById('kpiRecentList');
+      if (validToday.length === 0) {
+        recentBox.innerHTML = '<p style="color:var(--muted);font-size:0.8rem;">Belum ada absen hari ini.</p>';
+      } else {
+        const recent3 = validToday.slice(0, 3);
+        const uids = [...new Set(recent3.map(a => a.user_id))];
+        const { data: profs } = await supabaseClient
+          .from('profiles').select('id, nama_lengkap').in('id', uids);
+        const pmap = Object.fromEntries((profs || []).map(p => [p.id, p]));
+        recentBox.innerHTML = recent3.map(a => {
+          const p = pmap[a.user_id] || { nama_lengkap: '(?)' };
+          const nama = p.nama_lengkap.split(' ')[0];
+          return `
+            <div style="display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed var(--border);">
+              <span style="color:var(--ink);font-weight:500;">${nama}</span>
+              <span style="color:var(--muted);font-size:0.75rem;">${timeAgo(a.recorded_at)}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // ===== TABEL HARI INI =====
+      const tbody = document.getElementById('absenTableBody');
+      if (attToday.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;">Belum ada absen hari ini.</td></tr>`;
+      } else {
+        const uids = [...new Set(attToday.map(a => a.user_id))];
+        const { data: profs } = await supabaseClient
+          .from('profiles').select('id, nama_lengkap, nip').in('id', uids);
+        const pmap = Object.fromEntries((profs || []).map(p => [p.id, p]));
+
+        tbody.innerHTML = attToday.map(a => {
+          const p = pmap[a.user_id] || { nama_lengkap: '(?)', nip: '-' };
+          let pill, label;
+          if (a.is_izin) {
+            if (a.izin_type === 'sakit') { pill = 'is-pending'; label = 'Sakit'; }
+            else { pill = 'is-shipped'; label = 'Izin'; }
+          } else {
+            pill = a.status === 'VALID' ? 'is-paid'
+                 : a.status === 'REJECTED' ? 'is-refunded' : 'is-pending';
+            label = a.status;
+          }
+          return `
+            <tr>
+              <td><b>${p.nama_lengkap}</b></td>
+              <td>${p.nip || '-'}</td>
+              <td>${formatWIB(a.recorded_at)}</td>
+              <td>${a.distance_meters ? Math.round(a.distance_meters) + ' m' : '-'}</td>
+              <td><span class="pill ${pill}">${label}</span></td>
+              <td class="num">${a.match_distance ? a.match_distance.toFixed(3) : '-'}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // ===== GROUP DATA CHART (per tanggal, tanggal yang ada absen saja) =====
+      const byDate = {};
+      allAtt.forEach(a => {
+        if (a.status !== 'VALID' || a.is_izin) return;
+        if (!a.match_distance) return;
+        if (!byDate[a.recorded_date]) byDate[a.recorded_date] = [];
+        byDate[a.recorded_date].push(a.match_distance);
+      });
+
+      const chartData = Object.keys(byDate).sort().map(d => {
+        const arr = byDate[d];
+        return {
+          date: d,
+          label: dateLabelShort(d),
+          best: Math.min(...arr),
+          avg: arr.reduce((s, x) => s + x, 0) / arr.length,
+          worst: Math.max(...arr)
+        };
+      });
+
+      // ===== FAIL COUNT PER TANGGAL =====
+      const sessByDateUser = {};
+      allSess.forEach(s => {
+        const dk = new Date(s.started_at).toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+        if (!sessByDateUser[dk]) sessByDateUser[dk] = {};
+        if (!sessByDateUser[dk][s.user_id]) sessByDateUser[dk][s.user_id] = { total: 0, failed: 0 };
+        sessByDateUser[dk][s.user_id].total++;
+        if (s.final_status !== 'success') sessByDateUser[dk][s.user_id].failed++;
+      });
+
+      const failByDate = {};
+      Object.entries(sessByDateUser).forEach(([dk, users]) => {
+        let one = 0, two = 0, five = 0;
+        Object.values(users).forEach(u => {
+          if (u.failed >= 1) one++;
+          if (u.failed >= 3) two++;
+          if (u.failed >= 6) five++;
+        });
+        failByDate[dk] = { one, two, five };
+      });
+
+      // ===== WARNA CHART (adaptive ke theme) =====
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const COL_BEST  = isDark ? '#3D8475' : '#2D6A5A';
+      const COL_AVG   = isDark ? '#B5843D' : '#7A8B88';
+      const COL_WORST = isDark ? '#C9646E' : '#4A1F2C';
+      const COL_THRES = isDark ? 'rgba(242,237,228,0.35)' : '#C9BFAC';
+      const COL_GRID  = isDark ? 'rgba(242,237,228,0.12)' : '#EDE7DA';
+      const COL_TICK  = isDark ? '#F2EDE4' : '#7A8B88';
+
+      // ===== SLIDER STATE =====
+      const MAX_VISIBLE = 24;
+      let sliderPos = Math.max(0, chartData.length - MAX_VISIBLE);
+      const sliderWrap = document.getElementById('chartSliderWrap');
+      const slider = document.getElementById('chartSlider');
+      const rangeLabel = document.getElementById('chartRangeLabel');
+      const rangeTotal = document.getElementById('chartRangeTotal');
+
+      // ===== CHART =====
+      const chartCtx = document.getElementById('euclideanChart').getContext('2d');
+      let euclideanChart = new Chart(chartCtx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'Terdekat (best)',
+              data: [],
+              borderColor: COL_BEST,
+              backgroundColor: COL_BEST + '22',
+              tension: 0.3,
+              fill: false,
+              pointRadius: 3,
+              pointBackgroundColor: COL_BEST,
+              borderWidth: 2
+            },
+            {
+              label: 'Rata-rata',
+              data: [],
+              borderColor: COL_AVG,
+              backgroundColor: COL_AVG + '22',
+              tension: 0.3,
+              fill: true,
+              pointRadius: 3,
+              pointBackgroundColor: COL_AVG,
+              borderWidth: 2
+            },
+            {
+              label: 'Terjauh (lolos)',
+              data: [],
+              borderColor: COL_WORST,
+              backgroundColor: COL_WORST + '22',
+              tension: 0.3,
+              fill: false,
+              pointRadius: 3,
+              pointBackgroundColor: COL_WORST,
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: isDark ? '#1F3A38' : '#1F3A38',
+              titleColor: '#F2EDE4',
+              bodyColor: '#F2EDE4',
+              footerColor: '#A8D5BA',
+              padding: 12,
+              cornerRadius: 8,
+              titleFont: { size: 13, weight: '600' },
+              bodyFont: { size: 12 },
+              footerFont: { size: 11, style: 'italic' },
+              callbacks: {
+                title: (items) => {
+                  if (!items.length) return '';
+                  const idx = items[0].dataIndex;
+                  const d = euclideanChart.$chartDates?.[idx];
+                  return d ? dateLabelLong(d) : '';
+                },
+                label: (item) => {
+                  return ` ${item.dataset.label}: ${item.parsed.y.toFixed(3)}`;
+                },
+                footer: (items) => {
+                  if (!items.length) return [];
+                  const idx = items[0].dataIndex;
+                  const d = euclideanChart.$chartDates?.[idx];
+                  if (!d) return [];
+                  const f = failByDate[d];
+                  if (!f) return ['', 'Tidak ada sesi gagal'];
+                  return [
+                    '',
+                    `Gagal ≥1 sesi: ${f.one} guru`,
+                    `Gagal >2 sesi: ${f.two} guru`,
+                    `Gagal >5 sesi: ${f.five} guru`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              suggestedMin: 0.3,
+              suggestedMax: 0.9,
+              grid: { color: COL_GRID, drawBorder: false },
+              ticks: { color: COL_TICK, stepSize: 0.1 }
+            },
+            x: {
+              grid: { color: COL_GRID, drawBorder: false },
+              ticks: { color: COL_TICK, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }
+            }
+          }
+        }
+      });
+
+      euclideanChart.$chartDates = [];
+
+      // ===== RENDER CHART =====
+      function renderChartSlice() {
+        const slice = chartData.slice(sliderPos, sliderPos + MAX_VISIBLE);
+        euclideanChart.data.labels = slice.map(d => d.label);
+        euclideanChart.data.datasets[0].data = slice.map(d => d.best);
+        euclideanChart.data.datasets[1].data = slice.map(d => d.avg);
+        euclideanChart.data.datasets[2].data = slice.map(d => d.worst);
+        euclideanChart.$chartDates = slice.map(d => d.date);
+        euclideanChart.update();
+      }
+
+      // ===== SETUP SLIDER =====
+      if (chartData.length > MAX_VISIBLE) {
+        sliderWrap.style.display = 'block';
+        slider.min = '0';
+        slider.max = String(chartData.length - MAX_VISIBLE);
+        slider.value = String(sliderPos);
+        rangeTotal.textContent = `Total: ${chartData.length} hari`;
+      } else {
+        sliderWrap.style.display = 'none';
+        rangeTotal.textContent = '';
+      }
+
+      function updateSliderLabel() {
+        const start = sliderPos + 1;
+        const end = Math.min(sliderPos + MAX_VISIBLE, chartData.length);
+        rangeLabel.textContent = `Menampilkan ${start}–${end} dari ${chartData.length}`;
+      }
+
+      slider.addEventListener('input', (e) => {
+        sliderPos = parseInt(e.target.value);
+        updateSliderLabel();
+        renderChartSlice();
+      });
+
+      updateSliderLabel();
+      renderChartSlice();
+
+      // ===== DONUT CHART: Jam Absen =====
+      const buckets = { '06:30–07:00': 0, '07:00–07:30': 0, '07:30–08:00': 0, '08:00–10:30': 0 };
+      validToday.forEach(a => {
+        const t = new Date(a.recorded_at).toLocaleTimeString('en-GB', {
+          hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+        }).split(':');
+        const total = parseInt(t[0]) * 60 + parseInt(t[1]);
+        if (total < 7 * 60) buckets['06:30–07:00']++;
+        else if (total < 7 * 60 + 30) buckets['07:00–07:30']++;
+        else if (total < 8 * 60) buckets['07:30–08:00']++;
+        else buckets['08:00–10:30']++;
+      });
+
+      const colors = ['#2D6A5A', '#A8D5BA', '#B5843D', '#4A1F2C'];
+      const donutCtx = document.getElementById('jamChart').getContext('2d');
+      new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(buckets),
+          datasets: [{
+            data: Object.values(buckets),
+            backgroundColor: colors,
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '65%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1F3A38',
+              titleColor: '#F2EDE4',
+              bodyColor: '#F2EDE4',
+              padding: 10,
+              cornerRadius: 8
+            }
+          }
+        }
+      });
+
+      const total = Object.values(buckets).reduce((a, b) => a + b, 0);
+      document.getElementById('jamLegend').innerHTML = Object.entries(buckets).map(([k, v], i) => `
+        <li>
+          <span class="legend__dot" style="background:${colors[i]}"></span>
+          <span class="legend__name">${k}</span>
+          <span class="legend__val tnum">${v} guru</span>
+        </li>
+      `).join('') + `
+        <li style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px;">
+          <span class="legend__name" style="font-weight:600;">Total</span>
+          <span class="legend__val tnum" style="font-weight:700;">${total} guru</span>
+        </li>
+      `;
+
+      // Refresh button
+      document.getElementById('btnRefresh').addEventListener('click', () => {
+        location.reload();
+      });
+
+      // ===== AUTO UPDATE WARNA CHART SAAT THEME GANTI =====
+      function applyChartTheme() {
+        const isDark =
+          document.documentElement.getAttribute('data-theme') === 'dark' ||
+          document.documentElement.classList.contains('dark');
+
+        const C_BEST  = isDark ? '#3D8475' : '#2D6A5A';
+        const C_AVG   = isDark ? '#B5843D' : '#7A8B88';
+        const C_WORST = isDark ? '#C9646E' : '#4A1F2C';
+        const C_GRID  = isDark ? 'rgba(242,237,228,0.12)' : '#EDE7DA';
+        const C_TICK  = isDark ? '#F2EDE4' : '#7A8B88';
+
+        // Ambil config lama dari chart instance
+        const cfg = euclideanChart.config;
+
+        // Update warna di config
+        cfg.data.datasets[0].borderColor = C_BEST;
+        cfg.data.datasets[0].pointBackgroundColor = C_BEST;
+        cfg.data.datasets[0].backgroundColor = C_BEST + '22';
+
+        cfg.data.datasets[1].borderColor = C_AVG;
+        cfg.data.datasets[1].pointBackgroundColor = C_AVG;
+        cfg.data.datasets[1].backgroundColor = C_AVG + '22';
+
+        cfg.data.datasets[2].borderColor = C_WORST;
+        cfg.data.datasets[2].pointBackgroundColor = C_WORST;
+        cfg.data.datasets[2].backgroundColor = C_WORST + '22';
+
+        cfg.options.scales.y.grid.color = C_GRID;
+        cfg.options.scales.y.ticks.color = C_TICK;
+        cfg.options.scales.x.grid.color = C_GRID;
+        cfg.options.scales.x.ticks.color = C_TICK;
+
+        // Simpan tanggal + data sebelum destroy
+        const savedDates = euclideanChart.$chartDates || [];
+
+        // Destroy + rebuild — pasti re-render canvas
+        euclideanChart.destroy();
+        euclideanChart = new Chart(chartCtx, cfg);
+        euclideanChart.$chartDates = savedDates;
+
+        // Re-render slice (pakai data + slider posisi sekarang)
+        renderChartSlice();
+      }
+
+      // Pasang observer — trigger tiap kali data-theme atau class di <html> berubah
+      new MutationObserver(() => {
+        // Delay kecil biar main.js selesai set atribut dulu
+        setTimeout(applyChartTheme, 50);
+      }).observe(
+        document.documentElement,
+        { attributes: true, attributeFilter: ['data-theme', 'class'] }
+      );
+    })();
+  </script>
+</body>
+</html>

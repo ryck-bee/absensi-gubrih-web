@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Absen — Absensi SDN Gubrih 1</title>
+  <meta name="author" content="Riko Putra Dwi Susanto">
+  <meta name="description" content="Sistem absensi wajah guru SDN Gubrih 1 — Skripsi Teknik Informatika UMM Jember">
+
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__brand">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="img/logo.png" alt="Logo SDN Gubrih 1">
+        </span>
+        <span class="brand-word">SDN GUBRIH 1</span>
+      </div>
+      <nav class="sidebar__scroll" aria-label="Dashboard sections">
+        <div class="nav-group">
+          <p class="nav-group__label">Menu</p>
+          <a class="nav-link" href="index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Overview</span>
+          </a>
+          <a class="nav-link is-active" href="riwayat-absen.html" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span>Riwayat Absen</span>
+          </a>
+          <a class="nav-link" href="guru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Data Guru</span>
+          </a>
+          <a class="nav-link" href="hari-libur.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+            <span>Hari Libur</span>
+          </a>
+          <a class="nav-link" href="admin-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span>Riwayat Perubahan Admin</span>
+          </a>
+        </div>
+        <div class="nav-group" data-role="super-admin">
+          <p class="nav-group__label">Super Admin</p>
+          <a class="nav-link" href="admin/debug-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M3 10h3M18 10h3M4 16h2M18 16h2M4 20l2-2M18 18l2 2M4 12l2 2M18 14l2-2"/></svg>
+            <span>Debug Log</span>
+          </a>
+          <a class="nav-link" href="admin/device-management.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Device Management</span>
+          </a>
+          <a class="nav-link" href="admin/system-health.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            <span>System Health</span>
+          </a>
+          <a class="nav-link" href="admin/statistik-ringkas.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+            <span>Statistik Ringkas</span>
+          </a>
+          <a class="nav-link" href="admin/filter-data.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+            <span>Filter Data Global</span>
+          </a>
+          <a class="nav-link" href="admin/embedding-viewer.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span>Embedding Viewer</span>
+          </a>
+          <a class="nav-link" href="admin/foto-raw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Foto Raw per User</span>
+          </a>
+          <a class="nav-link" href="admin/backup-center.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M12 16v4M9 17l3 3 3-3"/></svg>
+            <span>Backup Center</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-btn topbar__menu" id="sidebarToggle" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <div class="searchbar" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" aria-label="Search" placeholder="Cari...">
+          <span class="kbd" aria-hidden="true">⌘K</span>
+        </div>
+        <div class="topbar__right">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          </button>
+          <div class="usermenu">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="icon-btn__dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifMenu" role="menu">
+              <div class="dropdown__head"><h4>Notifications</h4><a href="#">Mark all read</a></div>
+              <div class="dropdown__body">
+                <div class="notif" role="menuitem">
+                  <span class="notif__ic is-success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M15.5 9.5A2.5 2.5 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2.5 2.5 0 0 1-2.5-1.5"/></svg></span>
+                  <div><p><b>Payout settled</b> — $18,240 arrived.</p><time>3 hours ago</time></div>
+                </div>
+              </div>
+              <div class="dropdown__foot"><a href="#">View all activity</a></div>
+            </div>
+          </div>
+          <div class="usermenu">
+            <button class="usermenu__btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar"></span>
+              <span class="usermenu__meta">
+                <b id="userNameTop"></b>
+                <small id="userRoleTop"></small>
+              </span>
+              <svg class="usermenu__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="dropdown dropdown--user" id="userMenu" role="menu">
+              <div class="dropdown__head">
+                <div>
+                  <h4 id="userNameDropdown"></h4>
+                  <p class="dropdown__email" id="userEmailDropdown"></p>
+                </div>
+              </div>
+              <div class="menu-list">
+                <a href="#" role="menuitem" class="is-danger" onclick="logout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="main">
+        <section class="pagehead" aria-label="Page header">
+          <div>
+            <p class="pagehead__crumbs"><a href="index.html" id="schoolCrumb">SDN Gubrih 1</a> / Riwayat Absen</p>
+            <h1>Riwayat Absen</h1>
+            <p id="pageSubtitle">Riwayat kehadiran guru berdasarkan tanggal.</p>
+          </div>
+          <div class="pagehead__actions">
+            <select id="filterGuru" class="input input--bare" style="width:auto; height:36px; padding:0 10px; font-size:0.85rem;">
+              <option value="">Semua Guru</option>
+            </select>
+            <input type="date" id="filterDate" class="input input--bare" style="width:auto;">
+            <button class="btn btn--ghost" id="btnToday" type="button">Hari Ini</button>
+            <button class="btn btn--ghost" id="btnJadwalIzin" type="button" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span>Jadwal Izin</span>
+            </button>
+            <button class="btn btn--ghost" id="btnExport" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+              <span>Export CSV</span>
+            </button>
+            <button class="btn btn--ghost" id="btnPrintBulanan" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span>Print Bulanan</span>
+            </button>
+            <button class="btn btn--primary" id="btnAddIzin" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Tambah Izin</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Riwayat absen">
+          <div class="card__head">
+            <div><h3 id="tableTitle">Absensi</h3><p id="absenCount">Memuat...</p></div>
+          </div>
+          <div class="table-scroll">
+            <table class="dtable">
+              <thead>
+                <tr>
+                  <th scope="col" style="width:40px;"><input type="checkbox" id="checkAll"></th>
+                  <th scope="col">Nama</th>
+                  <th scope="col">NIP</th>
+                  <th scope="col">Tanggal</th>
+                  <th scope="col">Jam</th>
+                  <th scope="col">Jarak</th>
+                  <th scope="col">Status</th>
+                  <th class="th-right" scope="col">Match</th>
+                  <th class="th-right" scope="col">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="absenTableBody">
+                <tr><td colspan="9" style="text-align:center;padding:24px;">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="bulkBar" style="display:none; padding:12px 20px; border-top:1px solid var(--border); background:var(--surface-2);">
+            <span id="bulkCount" style="font-size:0.85rem; margin-right:12px;"></span>
+            <button class="btn btn--ghost" id="btnBulkDelete" type="button" style="padding:6px 12px; font-size:0.82rem; color:var(--danger);">
+              Hapus Izin Terpilih
+            </button>
+          </div>
+        </section>
+
+        <!-- Modal Ubah Absen -->
+        <div id="editModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:420px; box-shadow:var(--shadow-lg);">
+            <h3 style="margin-bottom:16px;">Ubah Absen</h3>
+            <p id="editTarget" style="font-size:0.85rem; color:var(--muted); margin-bottom:16px;"></p>
+            <div class="field">
+              <label for="editJenis">Jenis</label>
+              <select id="editJenis" class="input input--bare">
+                <option value="izin">Izin</option>
+                <option value="sakit">Sakit</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="editReason">Alasan (min 10 karakter)</label>
+              <textarea id="editReason" class="input input--bare" rows="3" placeholder="Misal: Izin ke luar kota untuk urusan keluarga" style="resize:vertical; min-height:80px; padding:10px 14px; height:auto;"></textarea>
+            </div>
+            <p id="editMsg" style="font-size:0.85rem; margin-bottom:12px; min-height:20px;"></p>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button class="btn btn--ghost" id="btnCancelEdit" type="button">Batal</button>
+              <button class="btn btn--primary" id="btnSubmitEdit" type="button">Simpan</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Tambah Izin -->
+        <div id="izinModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:440px; box-shadow:var(--shadow-lg);">
+            <h3 style="margin-bottom:16px;">Tambah Izin / Sakit</h3>
+            <div class="field">
+              <label for="izinGuru">Guru</label>
+              <select id="izinGuru" class="input input--bare">
+                <option value="">Pilih guru...</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="izinMulai">Tanggal Mulai</label>
+              <input type="date" id="izinMulai" class="input input--bare">
+            </div>
+            <div class="field">
+              <label for="izinSelesai">Tanggal Selesai</label>
+              <input type="date" id="izinSelesai" class="input input--bare">
+            </div>
+            <div class="field">
+              <label for="izinJenis">Jenis</label>
+              <select id="izinJenis" class="input input--bare">
+                <option value="izin">Izin</option>
+                <option value="sakit">Sakit</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="izinReason">Alasan (min 10 karakter)</label>
+              <textarea id="izinReason" class="input input--bare" rows="3" placeholder="Misal: Pelatihan guru di luar kota" style="resize:vertical; min-height:80px; padding:10px 14px; height:auto;"></textarea>
+            </div>
+            <p id="izinMsg" style="font-size:0.85rem; margin-bottom:12px; min-height:20px;"></p>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button class="btn btn--ghost" id="btnCancelIzin" type="button">Batal</button>
+              <button class="btn btn--primary" id="btnSubmitIzin" type="button">Simpan</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Hapus Bulk -->
+        <div id="bulkDeleteModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:420px; box-shadow:var(--shadow-lg);">
+            <h3 style="margin-bottom:16px;">Hapus Izin Terpilih</h3>
+            <p id="bulkDeleteTarget" style="font-size:0.85rem; color:var(--muted); margin-bottom:16px;"></p>
+            <div class="field">
+              <label for="bulkDeleteReason">Alasan (min 10 karakter)</label>
+              <textarea id="bulkDeleteReason" class="input input--bare" rows="3" placeholder="Misal: Salah input, izin dibatalkan" style="resize:vertical; min-height:80px; padding:10px 14px; height:auto;"></textarea>
+            </div>
+            <p id="bulkDeleteMsg" style="font-size:0.85rem; margin-bottom:12px; min-height:20px;"></p>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button class="btn btn--ghost" id="btnCancelBulkDelete" type="button">Batal</button>
+              <button class="btn btn--primary" id="btnSubmitBulkDelete" type="button" style="background:var(--danger);">Hapus</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Print Bulanan -->
+        <div id="printModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:420px; box-shadow:var(--shadow-lg);">
+            <h3 style="margin-bottom:16px;">Print Absen Bulanan</h3>
+
+            <div class="field">
+              <label for="printBulan">Bulan</label>
+              <select id="printBulan" class="input input--bare">
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Maret</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Juni</option>
+                <option value="7">Juli</option>
+                <option value="8">Agustus</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="printTahun">Tahun</label>
+              <input type="number" id="printTahun" class="input input--bare" min="2024" max="2030">
+            </div>
+
+            <div class="field">
+              <label for="printSheet">Halaman</label>
+              <select id="printSheet" class="input input--bare">
+                <option value="1">Sheet 1 — PNS/ASN (punya NIP)</option>
+                <option value="2">Sheet 2 — GTT/PTT (tanpa NIP)</option>
+                <option value="3">Keduanya (2 halaman)</option>
+              </select>
+            </div>
+
+            <p id="printMsg" style="font-size:0.85rem; margin-bottom:12px; min-height:20px;"></p>
+
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button class="btn btn--ghost" id="btnCancelPrint" type="button">Batal</button>
+              <button class="btn btn--primary" id="btnSubmitPrint" type="button">Unduh Excel</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-foot">
+  <span>© 2026 Absensi SDN Gubrih 1 · Riko Putra Dwi Susanto</span>
+  <nav class="app-foot__links" aria-label="Footer">
+    <a href="https://uicookies.com/downloads/console/">Lisensi Template (uiCookies)</a>
+  </nav>
+</footer>
+
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+    </div>
+  </div>
+
+  <script>
+    (async () => {
+      const session = await requireLogin();
+      if (!session) return;
+      initGlobalSearch();
+      initNotifDropdown();
+      applyRoleBasedSidebar();
+
+      const { data: myProfile } = await supabaseClient
+        .from('profiles')
+        .select('nama_lengkap, role')
+        .eq('id', session.user.id)
+        .single();
+
+      function avatarHtml(nama, size = 32) {
+        const initial = nama.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        const bg = `hsl(${hue}, 45%, 45%)`;
+        return `<span style="display:inline-grid;place-items:center;width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:#fff;font-weight:600;font-size:${size * 0.4}px;flex:0 0 auto;">${initial}</span>`;
+      }
+
+      if (myProfile) {
+        const nama = myProfile.nama_lengkap || 'Pengguna';
+        const role = myProfile.role === 'super_admin' ? 'Super Admin'
+                    : myProfile.role === 'admin_sekolah' ? 'Admin Sekolah'
+                    : 'Guru';
+
+        document.getElementById('userAvatar').innerHTML = avatarHtml(nama);
+        document.getElementById('userNameTop').textContent = nama;
+        document.getElementById('userRoleTop').textContent = role;
+        document.getElementById('userNameDropdown').textContent = nama;
+        document.getElementById('userEmailDropdown').textContent = session.user.email || '-';
+      }
+
+      function formatTanggalWIB(iso) {
+        return new Date(iso).toLocaleDateString('id-ID', {
+          day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta'
+        });
+      }
+      function formatJamWIB(iso) {
+        return new Date(iso).toLocaleTimeString('id-ID', {
+          hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+        });
+      }
+      function todayWIB() {
+        return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      }
+      function dateOffsetWIB(offsetDays) {
+        const d = new Date();
+        d.setDate(d.getDate() + offsetDays);
+        return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      }
+
+      let currentDate = todayWIB();
+      let selectedGuru = '';
+      let showFuture = false;
+      let cachedData = [];
+      let cachedProfiles = {};
+      let currentEditId = null;
+      const selected = new Set();
+
+      const dateInput = document.getElementById('filterDate');
+      const guruSelect = document.getElementById('filterGuru');
+      const btnToday = document.getElementById('btnToday');
+      const btnJadwalIzin = document.getElementById('btnJadwalIzin');
+      const pageSubtitle = document.getElementById('pageSubtitle');
+      const tableTitle = document.getElementById('tableTitle');
+      const bulkBar = document.getElementById('bulkBar');
+      const bulkCount = document.getElementById('bulkCount');
+      const checkAll = document.getElementById('checkAll');
+
+      async function loadGuruDropdown() {
+        const { data } = await supabaseClient
+          .from('profiles')
+          .select('id, nama_lengkap, nip')
+          .eq('role', 'guru')
+          .eq('aktif', true)
+          .order('nama_lengkap', { ascending: true });
+        const list = data || [];
+        guruSelect.innerHTML = '<option value="">Semua Guru</option>' +
+          list.map(g => `<option value="${g.id}">${g.nama_lengkap} (${g.nip || '-'})</option>`).join('');
+      }
+
+      function updateUIMode() {
+        if (selectedGuru) {
+          dateInput.style.display = 'none';
+          btnToday.style.display = 'none';
+          btnJadwalIzin.style.display = 'inline-flex';
+          if (showFuture) {
+            pageSubtitle.textContent = 'Jadwal izin mendatang untuk guru terpilih.';
+            tableTitle.textContent = 'Jadwal Izin Mendatang';
+            btnJadwalIzin.querySelector('span').textContent = 'Kembali';
+          } else {
+            pageSubtitle.textContent = '30 hari terakhir untuk guru terpilih.';
+            tableTitle.textContent = '30 Hari Terakhir';
+            btnJadwalIzin.querySelector('span').textContent = 'Jadwal Izin';
+          }
+        } else {
+          dateInput.style.display = '';
+          btnToday.style.display = '';
+          btnJadwalIzin.style.display = 'none';
+          pageSubtitle.textContent = 'Riwayat kehadiran guru berdasarkan tanggal.';
+          tableTitle.textContent = 'Absensi';
+        }
+      }
+
+      function updateBulkBar() {
+        if (selected.size > 0) {
+          bulkBar.style.display = 'block';
+          bulkCount.textContent = `${selected.size} izin dipilih`;
+        } else {
+          bulkBar.style.display = 'none';
+        }
+      }
+
+      async function loadAbsen() {
+        const tbody = document.getElementById('absenTableBody');
+        const countEl = document.getElementById('absenCount');
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;">Memuat...</td></tr>`;
+
+        selected.clear();
+        checkAll.checked = false;
+        updateBulkBar();
+
+        let query = supabaseClient.from('attendance').select('*');
+
+        if (selectedGuru) {
+          query = query.eq('user_id', selectedGuru);
+          if (showFuture) {
+            query = query.eq('is_izin', true).gte('recorded_date', todayWIB()).order('recorded_date', { ascending: true });
+          } else {
+            query = query.gte('recorded_date', dateOffsetWIB(-30)).lte('recorded_date', todayWIB()).order('recorded_date', { ascending: false });
+          }
+        } else {
+          query = query.eq('recorded_date', currentDate).order('recorded_at', { ascending: false });
+        }
+
+        const { data: att, error } = await query;
+
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;color:#c00;">Error: ${error.message}</td></tr>`;
+          return;
+        }
+
+        cachedData = att || [];
+
+        if (cachedData.length === 0) {
+          let msg = 'Belum ada absen pada tanggal ini.';
+          if (selectedGuru && showFuture) msg = 'Tidak ada jadwal izin mendatang.';
+          else if (selectedGuru) msg = 'Tidak ada absen dalam 30 hari terakhir.';
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;">${msg}</td></tr>`;
+          countEl.textContent = '0 data';
+          return;
+        }
+
+        const userIds = [...new Set(cachedData.map(a => a.user_id))];
+        const { data: profiles } = await supabaseClient
+          .from('profiles').select('id, nama_lengkap, nip').in('id', userIds);
+        cachedProfiles = Object.fromEntries((profiles || []).map(p => [p.id, p]));
+        countEl.textContent = `${cachedData.length} data`;
+
+        tbody.innerHTML = cachedData.map(a => {
+          const p = cachedProfiles[a.user_id] || { nama_lengkap: '(tidak diketahui)', nip: '-' };
+          let pill, label;
+          if (a.is_izin) {
+            if (a.izin_type === 'sakit') { pill = 'is-pending'; label = 'Sakit'; }
+            else { pill = 'is-shipped'; label = 'Izin'; }
+          } else {
+            pill = a.status === 'VALID' ? 'is-paid' : a.status === 'REJECTED' ? 'is-refunded' : 'is-pending';
+            label = a.status;
+          }
+          const checkboxCell = a.is_izin
+            ? `<td><input type="checkbox" data-cb="${a.id}" ${selected.has(a.id) ? 'checked' : ''}></td>`
+            : `<td></td>`;
+          return `
+            <tr>
+              ${checkboxCell}
+              <td><b>${p.nama_lengkap}</b></td>
+              <td>${p.nip || '-'}</td>
+              <td>${formatTanggalWIB(a.recorded_at)}</td>
+              <td>${formatJamWIB(a.recorded_at)}</td>
+              <td>${a.distance_meters ? Math.round(a.distance_meters) + ' m' : '-'}</td>
+              <td><span class="pill ${pill}">${label}</span></td>
+              <td class="num">${a.match_distance ? a.match_distance.toFixed(3) : '-'}</td>
+              <td class="num"><button class="btn btn--ghost" style="padding: 4px 10px; font-size: 0.8rem;" data-edit="${a.id}">Ubah</button></td>
+            </tr>`;
+        }).join('');
+
+        tbody.querySelectorAll('input[type="checkbox"][data-cb]').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const id = e.target.getAttribute('data-cb');
+            if (e.target.checked) selected.add(id); else selected.delete(id);
+            updateBulkBar();
+          });
+        });
+
+        tbody.querySelectorAll('button[data-edit]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-edit');
+            const a = cachedData.find(x => x.id === id);
+            const p = cachedProfiles[a.user_id] || { nama_lengkap: '(?)' };
+            openEditModal(id, p.nama_lengkap, formatTanggalWIB(a.recorded_at));
+          });
+        });
+      }
+
+      checkAll.addEventListener('change', (e) => {
+        const tbody = document.getElementById('absenTableBody');
+        tbody.querySelectorAll('input[type="checkbox"][data-cb]').forEach(cb => {
+          cb.checked = e.target.checked;
+          const id = cb.getAttribute('data-cb');
+          if (e.target.checked) selected.add(id); else selected.delete(id);
+        });
+        updateBulkBar();
+      });
+
+      const editModal = document.getElementById('editModal');
+      const editTarget = document.getElementById('editTarget');
+      const editJenis = document.getElementById('editJenis');
+      const editReason = document.getElementById('editReason');
+      const editMsg = document.getElementById('editMsg');
+
+      function openEditModal(id, nama, tanggal) {
+        currentEditId = id;
+        editTarget.textContent = `${nama} — ${tanggal}`;
+        editJenis.value = 'izin';
+        editReason.value = '';
+        editMsg.textContent = '';
+        editModal.style.display = 'block';
+      }
+      function closeEditModal() {
+        editModal.style.display = 'none';
+        currentEditId = null;
+      }
+
+      document.getElementById('btnCancelEdit').addEventListener('click', closeEditModal);
+
+      document.getElementById('btnSubmitEdit').addEventListener('click', async () => {
+        const reason = editReason.value.trim();
+        const jenis = editJenis.value;
+        editMsg.textContent = '';
+        editMsg.style.color = '';
+        if (reason.length < 10) { editMsg.textContent = 'Alasan minimal 10 karakter.'; editMsg.style.color = 'var(--danger)'; return; }
+        const btn = document.getElementById('btnSubmitEdit');
+        btn.disabled = true;
+        btn.textContent = 'Menyimpan...';
+        const { error } = await supabaseClient.rpc('admin_update_attendance', {
+          p_attendance_id: currentEditId, p_is_izin: true, p_izin_type: jenis, p_reason: reason
+        });
+        btn.disabled = false;
+        btn.textContent = 'Simpan';
+        if (error) { editMsg.textContent = 'Gagal: ' + error.message; editMsg.style.color = 'var(--danger)'; return; }
+        closeEditModal();
+        loadAbsen();
+      });
+
+      const izinModal = document.getElementById('izinModal');
+      const izinGuru = document.getElementById('izinGuru');
+      const izinMulai = document.getElementById('izinMulai');
+      const izinSelesai = document.getElementById('izinSelesai');
+      const izinJenis = document.getElementById('izinJenis');
+      const izinReason = document.getElementById('izinReason');
+      const izinMsg = document.getElementById('izinMsg');
+
+      async function loadGuruListModal() {
+        const { data } = await supabaseClient.from('profiles')
+          .select('id, nama_lengkap, nip').eq('role', 'guru').eq('aktif', true)
+          .order('nama_lengkap', { ascending: true });
+        const list = data || [];
+        izinGuru.innerHTML = '<option value="">Pilih guru...</option>' +
+          list.map(g => `<option value="${g.id}">${g.nama_lengkap} (${g.nip || '-'})</option>`).join('');
+      }
+
+      document.getElementById('btnAddIzin').addEventListener('click', async () => {
+        await loadGuruListModal();
+        izinGuru.value = selectedGuru || '';
+        izinMulai.value = todayWIB();
+        izinSelesai.value = todayWIB();
+        izinJenis.value = 'izin';
+        izinReason.value = '';
+        izinMsg.textContent = '';
+        izinModal.style.display = 'block';
+      });
+
+      document.getElementById('btnCancelIzin').addEventListener('click', () => {
+        izinModal.style.display = 'none';
+      });
+
+      document.getElementById('btnSubmitIzin').addEventListener('click', async () => {
+        const userId = izinGuru.value;
+        const mulai = izinMulai.value;
+        const selesai = izinSelesai.value;
+        const jenis = izinJenis.value;
+        const reason = izinReason.value.trim();
+        izinMsg.textContent = '';
+        izinMsg.style.color = '';
+        if (!userId) { izinMsg.textContent = 'Pilih guru.'; izinMsg.style.color = 'var(--danger)'; return; }
+        if (!mulai || !selesai) { izinMsg.textContent = 'Isi tanggal.'; izinMsg.style.color = 'var(--danger)'; return; }
+        if (reason.length < 10) { izinMsg.textContent = 'Alasan minimal 10 karakter.'; izinMsg.style.color = 'var(--danger)'; return; }
+        const btn = document.getElementById('btnSubmitIzin');
+        btn.disabled = true;
+        btn.textContent = 'Menyimpan...';
+        const { data, error } = await supabaseClient.rpc('admin_add_izin_range', {
+          p_user_id: userId, p_tanggal_mulai: mulai, p_tanggal_selesai: selesai,
+          p_izin_type: jenis, p_reason: reason
+        });
+        btn.disabled = false;
+        btn.textContent = 'Simpan';
+        if (error) { izinMsg.textContent = 'Gagal: ' + error.message; izinMsg.style.color = 'var(--danger)'; return; }
+        const inserted = data?.inserted ?? 0;
+        const skipped = data?.skipped ?? 0;
+        izinMsg.textContent = `${inserted} hari ditambah, ${skipped} dilewati.`;
+        izinMsg.style.color = 'var(--success)';
+        setTimeout(() => { izinModal.style.display = 'none'; loadAbsen(); }, 1200);
+      });
+
+      const bulkDeleteModal = document.getElementById('bulkDeleteModal');
+      const bulkDeleteTarget = document.getElementById('bulkDeleteTarget');
+      const bulkDeleteReason = document.getElementById('bulkDeleteReason');
+      const bulkDeleteMsg = document.getElementById('bulkDeleteMsg');
+
+      document.getElementById('btnBulkDelete').addEventListener('click', () => {
+        if (selected.size === 0) return;
+        bulkDeleteTarget.textContent = `${selected.size} izin akan dihapus.`;
+        bulkDeleteReason.value = '';
+        bulkDeleteMsg.textContent = '';
+        bulkDeleteModal.style.display = 'block';
+      });
+
+      document.getElementById('btnCancelBulkDelete').addEventListener('click', () => {
+        bulkDeleteModal.style.display = 'none';
+      });
+
+      document.getElementById('btnSubmitBulkDelete').addEventListener('click', async () => {
+        const reason = bulkDeleteReason.value.trim();
+        bulkDeleteMsg.textContent = '';
+        bulkDeleteMsg.style.color = '';
+        if (reason.length < 10) { bulkDeleteMsg.textContent = 'Alasan minimal 10 karakter.'; bulkDeleteMsg.style.color = 'var(--danger)'; return; }
+        const btn = document.getElementById('btnSubmitBulkDelete');
+        btn.disabled = true;
+        btn.textContent = 'Menghapus...';
+        const ids = [...selected];
+        const { data, error } = await supabaseClient.rpc('admin_delete_izin_bulk', { p_ids: ids, p_reason: reason });
+        btn.disabled = false;
+        btn.textContent = 'Hapus';
+        if (error) { bulkDeleteMsg.textContent = 'Gagal: ' + error.message; bulkDeleteMsg.style.color = 'var(--danger)'; return; }
+        const deleted = data?.deleted ?? 0;
+        const skipped = data?.skipped ?? 0;
+        bulkDeleteMsg.textContent = `${deleted} dihapus, ${skipped} dilewati.`;
+        bulkDeleteMsg.style.color = 'var(--success)';
+        setTimeout(() => { bulkDeleteModal.style.display = 'none'; loadAbsen(); }, 1200);
+      });
+
+      guruSelect.addEventListener('change', (e) => {
+        selectedGuru = e.target.value;
+        showFuture = false;
+        updateUIMode();
+        loadAbsen();
+      });
+
+      btnJadwalIzin.addEventListener('click', () => {
+        showFuture = !showFuture;
+        updateUIMode();
+        loadAbsen();
+      });
+
+      dateInput.value = currentDate;
+      dateInput.addEventListener('change', (e) => {
+        currentDate = e.target.value;
+        loadAbsen();
+      });
+
+      btnToday.addEventListener('click', () => {
+        currentDate = todayWIB();
+        dateInput.value = currentDate;
+        loadAbsen();
+      });
+
+      document.getElementById('btnExport').addEventListener('click', () => {
+        if (cachedData.length === 0) { alert('Nggak ada data buat diekspor.'); return; }
+        const headers = ['Nama', 'NIP', 'Tanggal', 'Jam', 'Jarak (m)', 'Status', 'Match Distance'];
+        const rows = cachedData.map(a => {
+          const p = cachedProfiles[a.user_id] || { nama_lengkap: '-', nip: '-' };
+          const status = a.is_izin ? (a.izin_type === 'sakit' ? 'Sakit' : 'Izin') : a.status;
+          return [p.nama_lengkap, p.nip || '-', formatTanggalWIB(a.recorded_at), formatJamWIB(a.recorded_at),
+            a.distance_meters ? Math.round(a.distance_meters) : '', status,
+            a.match_distance ? a.match_distance.toFixed(3) : ''];
+        });
+        const csv = [headers, ...rows]
+          .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const label = selectedGuru ? (showFuture ? 'jadwal-izin' : '30hari') : currentDate;
+        a.download = `riwayat-absen-${label}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // ===== PRINT BULANAN — pakai template.xlsx (ExcelJS) =====
+      const printModal = document.getElementById('printModal');
+      const printBulan = document.getElementById('printBulan');
+      const printTahun = document.getElementById('printTahun');
+      const printSheet = document.getElementById('printSheet');
+      const printMsg = document.getElementById('printMsg');
+
+      const nowWIB = new Date();
+      const nowBulanWIB = parseInt(nowWIB.toLocaleDateString('en-US', { timeZone: 'Asia/Jakarta', month: 'numeric' }));
+      const nowTahunWIB = parseInt(nowWIB.toLocaleDateString('en-US', { timeZone: 'Asia/Jakarta', year: 'numeric' }));
+      printBulan.value = String(nowBulanWIB);
+      printTahun.value = String(nowTahunWIB);
+
+      document.getElementById('btnPrintBulanan').addEventListener('click', () => {
+        printMsg.textContent = '';
+        printMsg.style.color = '';
+        printModal.style.display = 'block';
+      });
+
+      document.getElementById('btnCancelPrint').addEventListener('click', () => {
+        printModal.style.display = 'none';
+      });
+
+      function cellText(v) {
+        if (v === null || v === undefined) return '';
+        if (typeof v === 'object') {
+          if (v.richText) return v.richText.map(r => r.text || '').join('');
+          if (v.text) return String(v.text);
+          if (v.result !== undefined) return String(v.result);
+          if (v.hyperlink) return String(v.text || v.hyperlink);
+          return '';
+        }
+        return String(v);
+      }
+
+      async function generatePDF(bulan, tahun, sheetOption) {
+        // 1. Fetch template
+        const res = await fetch('assets/template.xlsx');
+        if (!res.ok) throw new Error('template.xlsx tidak ditemukan (status ' + res.status + ')');
+        const buf = await res.arrayBuffer();
+
+        // 2. Load pakai ExcelJS
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buf);
+
+        // 3. Fetch data dari Supabase
+        const daysInMonth = new Date(tahun, bulan, 0).getDate();
+        const startDate = `${tahun}-${String(bulan).padStart(2, '0')}-01`;
+        const endDate = `${tahun}-${String(bulan).padStart(2, '0')}-${String(daysInMonth).padStart(2, '0')}`;
+
+        const [attRes, profRes] = await Promise.all([
+          supabaseClient.from('attendance')
+            .select('user_id, recorded_date, is_izin, izin_type, status')
+            .gte('recorded_date', startDate)
+            .lte('recorded_date', endDate),
+          supabaseClient.from('profiles')
+            .select('id, nip, nama_lengkap')
+            .eq('role', 'guru').eq('aktif', true)
+        ]);
+
+        if (attRes.error) throw new Error('Gagal ambil attendance: ' + attRes.error.message);
+        if (profRes.error) throw new Error('Gagal ambil profiles: ' + profRes.error.message);
+
+        // 4. Map NIP → user_id, nama
+        const nipByUser = {};
+        const nameByNip = {};
+        (profRes.data || []).forEach(p => {
+          if (p.nip) {
+            const n = String(p.nip).replace(/\D/g, '');
+            if (n) {
+              nipByUser[p.id] = n;
+              nameByNip[n] = p.nama_lengkap;
+            }
+          }
+        });
+
+        // 5. Map NIP → { 'YYYY-MM-DD': 'V'|'I'|'S' }
+        const attMap = {};
+        (attRes.data || []).forEach(a => {
+          const nip = nipByUser[a.user_id];
+          if (!nip) return;
+          if (!attMap[nip]) attMap[nip] = {};
+          let val = null;
+          if (a.is_izin) {
+            val = (a.izin_type === 'sakit') ? 'S' : 'I';
+          } else if (a.status === 'VALID') {
+            val = 'V';
+          }
+          if (val) attMap[nip][a.recorded_date] = val;
+        });
+
+        // 6. Isi template
+        const matchedNips = new Set();
+        const SHEETS = ['PNS - ASN', 'GTT - PTT'];
+
+        const BORDER_THIN = {
+          top:    { style: 'thin', color: { argb: 'FF000000' } },
+          left:   { style: 'thin', color: { argb: 'FF000000' } },
+          bottom: { style: 'thin', color: { argb: 'FF000000' } },
+          right:  { style: 'thin', color: { argb: 'FF000000' } }
+        };
+
+        SHEETS.forEach(sheetName => {
+          const ws = workbook.getWorksheet(sheetName);
+          if (!ws) return;
+
+          ws.eachRow((row) => {
+            const bCell = row.getCell(2);
+            const bStr = cellText(bCell.value).toUpperCase();
+            if (!bStr.includes('NIP')) return;
+
+            const nip = bStr.replace(/\D/g, '');
+            if (!nip) return;
+
+            const dates = attMap[nip];
+            if (!dates) return;
+
+            matchedNips.add(nip);
+
+            for (let day = 1; day <= daysInMonth; day++) {
+              const dateStr = `${tahun}-${String(bulan).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const val = dates[dateStr];
+              if (!val) continue;
+              const col = 5 + (day - 1);
+              const target = row.getCell(col);
+
+              // Simpan border lama, merge dengan border baru
+              const oldBorder = target.border || {};
+              target.value = val;
+              target.border = Object.assign({}, oldBorder, BORDER_THIN);
+            }
+          });
+        });
+
+        // 7. Deteksi guru baru
+        const newGurus = [];
+        Object.keys(attMap).forEach(nip => {
+          if (!matchedNips.has(nip)) {
+            newGurus.push({ nip, nama: nameByNip[nip] || '(?)' });
+          }
+        });
+
+        // 8. Write buffer & download
+        const outBuf = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([outBuf], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const namaBulanFile = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'][bulan - 1];
+        a.href = url;
+        a.download = `absen-${sheetOption === 3 ? 'lengkap' : 'sheet' + sheetOption}-${namaBulanFile}-${tahun}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        return { newGurus, matchedCount: matchedNips.size, filledCount: attRes.data.length };
+      }
+
+      document.getElementById('btnSubmitPrint').addEventListener('click', async () => {
+        const bulan = parseInt(printBulan.value);
+        const tahun = parseInt(printTahun.value);
+        const sheetOption = parseInt(printSheet.value);
+
+        if (!bulan || !tahun || tahun < 2020 || tahun > 2100) {
+          printMsg.textContent = 'Isi bulan dan tahun dengan benar.';
+          printMsg.style.color = 'var(--danger)';
+          return;
+        }
+
+        const btn = document.getElementById('btnSubmitPrint');
+        btn.disabled = true;
+        btn.textContent = 'Menyiapkan...';
+        printMsg.textContent = '';
+
+        try {
+          const r = await generatePDF(bulan, tahun, sheetOption);
+          let msg = `File Excel terunduh. Buka di Excel → File → Export as PDF. (${r.matchedCount} guru diisi, ${r.filledCount} data absen.)`;
+          if (r.newGurus.length > 0) {
+            msg += ` ⚠ ${r.newGurus.length} guru baru nggak ada di template: ${r.newGurus.map(g => g.nama).join(', ')}`;
+          }
+          printMsg.textContent = msg;
+          printMsg.style.color = 'var(--success)';
+          setTimeout(() => { printModal.style.display = 'none'; }, 3500);
+        } catch (e) {
+          printMsg.textContent = 'Gagal: ' + e.message;
+          printMsg.style.color = 'var(--danger)';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Unduh Excel';
+        }
+      });
+
+      await loadGuruDropdown();
+      const params = new URLSearchParams(location.search);
+      const guruParam = params.get('guru');
+      if (guruParam) {
+        selectedGuru = guruParam;
+        guruSelect.value = guruParam;
+      }
+      updateUIMode();
+      await loadAbsen();
+    })();
+  </script>
+</body>
+</html>
