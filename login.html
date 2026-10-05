@@ -39,21 +39,36 @@
         <h2>Absensi Wajah Guru SDN Gubrih 1</h2>
         <p>Sistem absensi berbasis pengenalan wajah untuk guru SDN Gubrih 1. Login dengan NIP dan password yang telah disediakan.</p>
 
+        <ul style="list-style:none; padding:0; margin:32px 0 0; display:flex; flex-direction:column; gap:14px;">
+          <li style="display:flex; gap:12px; align-items:flex-start; color:rgba(255,255,255,0.88); font-size:0.98rem; line-height:1.5;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A8D5BA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto; margin-top:2px;"><path d="M20 6L9 17l-5-5"/></svg>
+            <span>Absensi wajah real-time, tanpa fingerprint</span>
+          </li>
+          <li style="display:flex; gap:12px; align-items:flex-start; color:rgba(255,255,255,0.88); font-size:0.98rem; line-height:1.5;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A8D5BA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto; margin-top:2px;"><path d="M20 6L9 17l-5-5"/></svg>
+            <span>Validasi GPS radius sekolah 50 meter</span>
+          </li>
+          <li style="display:flex; gap:12px; align-items:flex-start; color:rgba(255,255,255,0.88); font-size:0.98rem; line-height:1.5;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A8D5BA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto; margin-top:2px;"><path d="M20 6L9 17l-5-5"/></svg>
+            <span>Bekerja offline, sinkron otomatis saat online</span>
+          </li>
+        </ul>
+
         <div style="margin-top: 40px;">
           <p style="font-size: 14px; opacity: 0.75; margin-bottom: 14px;">Belum punya aplikasinya?</p>
-          <a
-            href="assets/Absensi-SDN-Gubrih-1.apk"
-            download
+          <button
+            id="btnUnduhAplikasi"
+            type="button"
             class="btn btn--primary btn--lg"
-            style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none; padding: 14px 22px;">
+            style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; cursor: pointer;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <path d="M7 10l5 5 5-5"/>
               <path d="M12 15V3"/>
             </svg>
             <span>Unduh Aplikasi</span>
-          </a>
-          <p style="font-size: 12px; opacity: 0.6; margin-top: 12px;">Versi 1.0.0 · Android 9+ · ~37 MB</p>
+          </button>
+          <p style="font-size: 12px; opacity: 0.6; margin-top: 12px;">Versi terbaru · Android 9+ · ~37 MB</p>
         </div>
       </div>
 
@@ -121,7 +136,66 @@
 
   </div>
 
+  <!-- Modal Unduh Aplikasi (frosted glass) -->
+  <div id="downloadModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.4); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter:blur(20px) saturate(140%); -webkit-backdrop-filter:blur(20px) saturate(140%); border:1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius:var(--radius); padding:24px; width:100%; max-width:440px; box-shadow:0 24px 60px -18px rgba(10,11,22,0.4);">
+      <h3 style="margin-bottom:8px; color:var(--ink);">Pilih Versi Aplikasi</h3>
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:20px;">Pilih versi yang sesuai dengan HP kamu.</p>
+
+      <!-- Card versi terbaru -->
+      <a href="assets/Absensi-SDN-Gubrih-1.apk" download
+         style="display:block; text-decoration:none; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; transition:background .15s;"
+         onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='var(--surface)'">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <b style="color:var(--ink); font-size:0.95rem;">Versi 1.0.0</b>
+          <span style="font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--accent-soft); color:var(--accent); letter-spacing:0.05em;">RECOMMENDED</span>
+        </div>
+        <p style="font-size:0.8rem; color:var(--muted); margin:0;">Android 9+ · ~37 MB · Fitur lengkap</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; color:var(--accent); font-weight:600; font-size:0.85rem;">
+          <span>Unduh</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </a>
+
+      <!-- Card versi alternatif -->
+      <a href="assets/Absensi-SDN-Gubrih-1-32bit.apk" download
+         style="display:block; text-decoration:none; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; transition:background .15s;"
+         onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='var(--surface)'">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <b style="color:var(--ink); font-size:0.95rem;">Versi 1.0.0 (32-bit)</b>
+        </div>
+        <p style="font-size:0.8rem; color:var(--muted); margin:0;">Android 8+ · ~32 MB · Build alternatif</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; color:var(--accent); font-weight:600; font-size:0.85rem;">
+          <span>Unduh</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </a>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="btn btn--ghost" id="btnCloseDownload" type="button">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ===== Modal Unduh Aplikasi =====
+    const downloadModal = document.getElementById('downloadModal');
+    document.getElementById('btnUnduhAplikasi').addEventListener('click', () => {
+      downloadModal.style.display = 'block';
+    });
+    document.getElementById('btnCloseDownload').addEventListener('click', () => {
+      downloadModal.style.display = 'none';
+    });
+    downloadModal.addEventListener('click', (e) => {
+      if (e.target === downloadModal) downloadModal.style.display = 'none';
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && downloadModal.style.display === 'block') {
+        downloadModal.style.display = 'none';
+      }
+    });
+
+    // ===== Login Form =====
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button[type="submit"]');

@@ -708,15 +708,24 @@
         else buckets['08:00–10:30']++;
       });
 
-      const colors = ['#2D6A5A', '#A8D5BA', '#B5843D', '#4A1F2C'];
+      const readDonutColors = () => {
+        const cs = getComputedStyle(document.documentElement);
+        return [
+          cs.getPropertyValue('--donut-1').trim() || '#2D6A5A',
+          cs.getPropertyValue('--donut-2').trim() || '#A8D5BA',
+          cs.getPropertyValue('--donut-3').trim() || '#B5843D',
+          cs.getPropertyValue('--donut-4').trim() || '#4A1F2C',
+        ];
+      };
+      let donutColors = readDonutColors();
       const donutCtx = document.getElementById('jamChart').getContext('2d');
-      new Chart(donutCtx, {
+      const jamChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
           labels: Object.keys(buckets),
           datasets: [{
             data: Object.values(buckets),
-            backgroundColor: colors,
+            backgroundColor: donutColors,
             borderWidth: 0
           }]
         },
@@ -740,7 +749,7 @@
       const total = Object.values(buckets).reduce((a, b) => a + b, 0);
       document.getElementById('jamLegend').innerHTML = Object.entries(buckets).map(([k, v], i) => `
         <li>
-          <span class="legend__dot" style="background:${colors[i]}"></span>
+          <span class="legend__dot" style="background:${donutColors[i]}"></span>
           <span class="legend__name">${k}</span>
           <span class="legend__val tnum">${v} guru</span>
         </li>
@@ -788,6 +797,25 @@
         cfg.options.scales.y.ticks.color = C_TICK;
         cfg.options.scales.x.grid.color = C_GRID;
         cfg.options.scales.x.ticks.color = C_TICK;
+
+        // Update donut
+        donutColors = readDonutColors();
+        jamChart.data.datasets[0].backgroundColor = donutColors;
+        jamChart.update();
+
+        const total2 = Object.values(buckets).reduce((a, b) => a + b, 0);
+        document.getElementById('jamLegend').innerHTML = Object.entries(buckets).map(([k, v], i) => `
+          <li>
+            <span class="legend__dot" style="background:${donutColors[i]}"></span>
+            <span class="legend__name">${k}</span>
+            <span class="legend__val tnum">${v} guru</span>
+          </li>
+        `).join('') + `
+          <li style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px;">
+            <span class="legend__name" style="font-weight:600;">Total</span>
+            <span class="legend__val tnum" style="font-weight:700;">${total2} guru</span>
+          </li>
+        `;
 
         // Simpan tanggal + data sebelum destroy
         const savedDates = euclideanChart.$chartDates || [];

@@ -206,3 +206,76 @@ html.theme-anim *::after {
 html:not([data-user-role="super_admin"]) .nav-group[data-role="super-admin"] {
   display: none;
 }
+
+/* ============================================================
+   OVERRIDE media query bawaan template (style.css).
+   Tanpa ini, OS dark mode tanpa data-theme → maksa palet iris
+   (biru-ungu) dari template asli, bukan palet custom kita.
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #14211F;
+    --surface: #1F3A38;
+    --surface-2: #294945;
+    --surface-inset: #172A28;
+
+    --sidebar-bg: #0F1F1D;
+    --sidebar-ink: #A8D5BA;
+    --sidebar-ink-dim: #6B9690;
+    --sidebar-strong: #FFFFFF;
+    --sidebar-active-bg: rgba(168, 213, 186, 0.20);
+    --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+    --sidebar-border: rgba(168, 213, 186, 0.10);
+
+    --ink: #F2EDE4;
+    --ink-2: #C9BFAC;
+    --muted: #8E9B98;
+
+    --border: #294945;
+    --border-strong: #385A56;
+
+    --accent: #3D8475;
+    --accent-strong: #4A9482;
+    --accent-ink: #FFFFFF;
+    --accent-soft: rgba(61, 132, 117, 0.20);
+    --accent-ring: rgba(61, 132, 117, 0.32);
+
+    --success: #4A9482;
+    --success-soft: rgba(74, 148, 130, 0.14);
+    --warning: #D9A24E;
+    --warning-soft: rgba(217, 162, 78, 0.14);
+    --danger: #C9646E;
+    --danger-soft: rgba(201, 100, 110, 0.14);
+    --info: #6BA3CC;
+    --info-soft: rgba(107, 163, 204, 0.14);
+
+    --chart-line: #3D8475;
+    --chart-line-fill: rgba(61, 132, 117, 0.18);
+    --chart-prev: #5A706D;
+    --chart-grid: #294945;
+    --chart-tick: #8E9B98;
+    --donut-1: #3D8475;
+    --donut-2: #A8D5BA;
+    --donut-3: #D9A24E;
+    --donut-4: #C9646E;
+
+    --legend-best: #3D8475;
+    --legend-avg: #B5843D;
+    --legend-worst: #C9646E;
+  }
+}
+
+.auth {
+  grid-template-columns: 55fr 45fr;
+}
+
+.auth__brand-mid h2 {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  line-height: 1.15;
+}
+
+.auth__brand-mid p {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  max-width: 520px;
+}
