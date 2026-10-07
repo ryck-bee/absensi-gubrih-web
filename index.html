@@ -415,7 +415,17 @@
       const allSess = sessRes.data || [];
 
       // ===== DATA HARI INI =====
-      const attToday = allAtt.filter(a => a.recorded_date === today);
+      // Ambil ID guru aktif (exclude admin/super_admin)
+      const { data: guruIds } = await supabaseClient
+        .from('profiles')
+        .select('id')
+        .eq('role', 'guru')
+        .eq('aktif', true);
+      const guruIdSet = new Set((guruIds || []).map(g => g.id));
+
+      const attToday = allAtt.filter(a =>
+        a.recorded_date === today && guruIdSet.has(a.user_id)
+      );
       const validToday = attToday.filter(a => a.status === 'VALID' && !a.is_izin);
       const terlambat = validToday.filter(a => a.is_late);
 

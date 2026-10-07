@@ -269,9 +269,9 @@
         .select('id, nama_lengkap, nip, role, aktif')
         .order('nama_lengkap', { ascending: true });
 
-      // Filter: cuma yang nip-nya angka semua dan nggak kosong
+      // Filter: tampilkan guru yang punya NIP (numeric atau "-")
       const gurus = (allProfiles || []).filter(p =>
-        p.nip && /^\d+$/.test(p.nip)
+        p.nip && String(p.nip).trim() !== ''
       );
 
       const tbody = document.getElementById('guruTableBody');
