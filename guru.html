@@ -267,6 +267,8 @@
       const { data: allProfiles, error } = await supabaseClient
         .from('profiles')
         .select('id, nama_lengkap, nip, role, aktif')
+        .eq('role', 'guru')
+        .eq('aktif', true)
         .order('nama_lengkap', { ascending: true });
 
       // Filter: tampilkan guru yang punya NIP (numeric atau "-")
