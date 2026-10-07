@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistik Ringkas — Absensi SDN Gubrih 1</title>
+  <meta name="author" content="Riko Putra Dwi Susanto">
+
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="apple-touch-icon" href="../img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/custom.css">
+  <script src="../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__brand">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="../img/logo.png" alt="Logo SDN Gubrih 1">
+        </span>
+        <span class="brand-word">SDN GUBRIH 1</span>
+      </div>
+
+      <nav class="sidebar__scroll" aria-label="Dashboard sections">
+        <div class="nav-group">
+          <p class="nav-group__label">Menu</p>
+          <a class="nav-link" href="../index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Overview</span>
+          </a>
+          <a class="nav-link" href="../riwayat-absen.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span>Riwayat Absen</span>
+          </a>
+          <a class="nav-link" href="../guru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Data Guru</span>
+          </a>
+          <a class="nav-link" href="../hari-libur.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+            <span>Hari Libur</span>
+          </a>
+          <a class="nav-link" href="../admin-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span>Riwayat Perubahan Admin</span>
+          </a>
+        </div>
+
+        <div class="nav-group" data-role="super-admin">
+          <p class="nav-group__label">Super Admin</p>
+          <a class="nav-link" href="debug-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M3 10h3M18 10h3M4 16h2M18 16h2M4 20l2-2M18 18l2 2M4 12l2 2M18 14l2-2"/></svg>
+            <span>Debug Log</span>
+          </a>
+          <a class="nav-link" href="device-management.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Device Management</span>
+          </a>
+          <a class="nav-link" href="system-health.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            <span>System Health</span>
+          </a>
+          <a class="nav-link is-active" href="statistik-ringkas.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+            <span>Statistik Ringkas</span>
+          </a>
+          <a class="nav-link" href="embedding-viewer.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span>Embedding Viewer</span>
+          </a>
+          <a class="nav-link" href="foto-raw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Foto Raw per User</span>
+          </a>
+          <a class="nav-link" href="backup-center.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M12 16v4M9 17l3 3 3-3"/></svg>
+            <span>Backup Center</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-btn topbar__menu" id="sidebarToggle" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+
+        <div class="searchbar" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" aria-label="Search Console" placeholder="Cari…">
+          <span class="kbd" aria-hidden="true">⌘K</span>
+        </div>
+
+        <div class="topbar__right">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          </button>
+
+          <div class="usermenu">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="icon-btn__dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifMenu" role="menu">
+              <div class="dropdown__head"><h4>Notifications</h4><a href="#">Mark all read</a></div>
+              <div class="dropdown__body"></div>
+              <div class="dropdown__foot"><a href="#">View all activity</a></div>
+            </div>
+          </div>
+
+          <div class="usermenu">
+            <button class="usermenu__btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar"></span>
+              <span class="usermenu__meta">
+                <b id="userNameTop"></b>
+                <small id="userRoleTop"></small>
+              </span>
+              <svg class="usermenu__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="dropdown dropdown--user" id="userMenu" role="menu">
+              <div class="dropdown__head">
+                <div>
+                  <h4 id="userNameDropdown"></h4>
+                  <p class="dropdown__email" id="userEmailDropdown"></p>
+                </div>
+              </div>
+              <div class="menu-list">
+                <a href="#" role="menuitem" class="is-danger" onclick="logout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="main">
+
+        <section class="pagehead" aria-label="Page header">
+          <div>
+            <p class="pagehead__crumbs"><a href="../index.html">SDN Gubrih 1</a> / Statistik Ringkas</p>
+            <h1>Statistik Ringkas</h1>
+            <p id="periodLabel">Rekapitulasi bulan ini</p>
+          </div>
+          <div class="pagehead__actions">
+            <input type="month" id="filterMonth" class="input input--bare" style="width:auto;">
+            <button class="btn btn--ghost" id="btnRefresh" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="grid kpis" aria-label="Ringkasan bulan ini" style="margin-bottom:20px;">
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Total Kehadiran</p>
+              <div class="kpi__value tnum" id="kpiHadir">0</div>
+            </div>
+            <div class="kpi__row">
+              <span id="kpiHadirSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Terlambat</p>
+              <div class="kpi__value tnum" id="kpiTelat">0</div>
+            </div>
+            <div class="kpi__row">
+              <span id="kpiTelatSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Izin / Sakit</p>
+              <div class="kpi__value tnum" id="kpiIzin">0</div>
+            </div>
+            <div class="kpi__row">
+              <span id="kpiIzinSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Rata-rata Kehadiran</p>
+              <div class="kpi__value tnum" id="kpiPersen">0%</div>
+            </div>
+            <div class="kpi__row">
+              <span id="kpiPersenSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- Chart tren harian -->
+        <section class="card" aria-label="Tren harian" style="margin-bottom:20px;">
+          <div class="card__head">
+            <div><h3>Tren Kehadiran Harian</h3><p id="chartSubtitle">Per hari dalam bulan terpilih</p></div>
+          </div>
+          <div class="card__body">
+            <div class="chart-wrap" style="height:300px;">
+              <canvas id="trenChart" role="img" aria-label="Chart tren kehadiran harian"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tabel per guru -->
+        <section class="card" aria-label="Rekap per guru">
+          <div class="card__head">
+            <div><h3>Rekap per Guru</h3><p id="guruCount">Memuat...</p></div>
+          </div>
+          <div class="table-scroll">
+            <table class="dtable">
+              <thead>
+                <tr>
+                  <th scope="col">Nama</th>
+                  <th scope="col">NIP</th>
+                  <th class="th-right" scope="col">Hadir</th>
+                  <th class="th-right" scope="col">Terlambat</th>
+                  <th class="th-right" scope="col">Izin</th>
+                  <th class="th-right" scope="col">Sakit</th>
+                  <th class="th-right" scope="col">% Kehadiran</th>
+                </tr>
+              </thead>
+              <tbody id="guruTableBody">
+                <tr><td colspan="7" style="text-align:center;padding:24px;">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="app-foot">
+        <span>© 2026 Absensi SDN Gubrih 1 · Riko Putra Dwi Susanto</span>
+        <nav class="app-foot__links" aria-label="Footer">
+          <a href="https://uicookies.com/downloads/console/">Lisensi Template (uiCookies)</a>
+        </nav>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    (async () => {
+      const session = await requireLogin();
+      if (!session) return;
+      initGlobalSearch();
+      initNotifDropdown();
+      applyRoleBasedSidebar();
+
+      const { data: myProfile } = await supabaseClient
+        .from('profiles')
+        .select('nama_lengkap, role')
+        .eq('id', session.user.id)
+        .single();
+
+      function avatarHtml(nama, size = 32) {
+        const initial = nama.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        const bg = `hsl(${hue}, 45%, 45%)`;
+        return `<span style="display:inline-grid;place-items:center;width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:#fff;font-weight:600;font-size:${size * 0.4}px;flex:0 0 auto;">${initial}</span>`;
+      }
+
+      if (myProfile) {
+        const nama = myProfile.nama_lengkap || 'Pengguna';
+        const role = myProfile.role === 'super_admin' ? 'Super Admin'
+                    : myProfile.role === 'admin_sekolah' ? 'Admin Sekolah'
+                    : 'Guru';
+        document.getElementById('userAvatar').innerHTML = avatarHtml(nama);
+        document.getElementById('userNameTop').textContent = nama;
+        document.getElementById('userRoleTop').textContent = role;
+        document.getElementById('userNameDropdown').textContent = nama;
+        document.getElementById('userEmailDropdown').textContent = session.user.email || '-';
+      }
+
+      function getMonthWIB() {
+        return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' }).substring(0, 7);
+      }
+
+      const monthInput = document.getElementById('filterMonth');
+      monthInput.value = getMonthWIB();
+
+      let currentMonth = getMonthWIB();
+      let trenChart = null;
+      let guruList = [];
+      let profileMap = {};
+
+      // ===== LOAD DATA =====
+      async function loadAll() {
+        const [year, month] = currentMonth.split('-').map(Number);
+        const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+        const lastDay = new Date(year, month, 0).getDate();
+        const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+        document.getElementById('periodLabel').textContent = new Date(year, month - 1, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+        // Fetch attendance bulan ini
+        const { data: attData, error: attError } = await supabaseClient
+          .from('attendance')
+          .select('user_id, recorded_date, status, is_late, is_izin, izin_type, recorded_at')
+          .gte('recorded_date', startDate)
+          .lte('recorded_date', endDate);
+
+        if (attError) {
+          alert('Gagal memuat attendance: ' + attError.message);
+          return;
+        }
+
+        // Fetch guru aktif
+        const { data: guruData, error: guruError } = await supabaseClient
+          .from('profiles')
+          .select('id, nama_lengkap, nip')
+          .eq('role', 'guru')
+          .eq('aktif', true)
+          .order('nama_lengkap', { ascending: true });
+
+        if (guruError) {
+          alert('Gagal memuat guru: ' + guruError.message);
+          return;
+        }
+
+        guruList = guruData || [];
+        profileMap = Object.fromEntries(guruList.map(g => [g.id, g]));
+
+        const allAtt = attData || [];
+        const guruIdSet = new Set(guruList.map(g => g.id));
+
+        // Filter: cuma guru
+        const attGuru = allAtt.filter(a => guruIdSet.has(a.user_id));
+
+        // KPI
+        const validAtt = attGuru.filter(a => a.status === 'VALID' && !a.is_izin);
+        const telat = validAtt.filter(a => a.is_late);
+        const izinSakit = attGuru.filter(a => a.is_izin);
+
+        document.getElementById('kpiHadir').textContent = validAtt.length;
+        document.getElementById('kpiHadirSub').textContent = `dari ${guruList.length} guru`;
+
+        document.getElementById('kpiTelat').textContent = telat.length;
+        const persenTelat = validAtt.length > 0 ? Math.round((telat.length / validAtt.length) * 100) : 0;
+        document.getElementById('kpiTelatSub').textContent = `${persenTelat}% dari kehadiran`;
+
+        document.getElementById('kpiIzin').textContent = izinSakit.length;
+        const izinCount = izinSakit.filter(a => a.izin_type === 'izin').length;
+        const sakitCount = izinSakit.filter(a => a.izin_type === 'sakit').length;
+        document.getElementById('kpiIzinSub').textContent = `${izinCount} izin · ${sakitCount} sakit`;
+
+        // Persen kehadiran: (valid / (guru aktif × hari kerja)) × 100
+        // Estimasi hari kerja: sampai hari ini atau sampai akhir bulan?
+        // Simple: pakai jumlah hari kerja unik dari attendance + estimasi
+        const uniqueDates = [...new Set(validAtt.map(a => a.recorded_date))].length;
+        const expected = guruList.length * Math.max(uniqueDates, 1);
+        const persenHadir = expected > 0 ? Math.round((validAtt.length / expected) * 100) : 0;
+        document.getElementById('kpiPersen').textContent = `${persenHadir}%`;
+        document.getElementById('kpiPersenSub').textContent = `${validAtt.length}/${expected} (guru × hari)`;
+
+        // Chart tren harian
+        renderTrenChart(validAtt, telat, year, month, lastDay);
+
+        // Tabel per guru
+        renderGuruTable(validAtt, telat, izinSakit);
+      }
+
+      // ===== CHART TREN =====
+      function renderTrenChart(validAtt, telat, year, month, lastDay) {
+        const labels = [];
+        const dataHadir = [];
+        const dataTelat = [];
+
+        for (let d = 1; d <= lastDay; d++) {
+          const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          labels.push(String(d));
+          dataHadir.push(validAtt.filter(a => a.recorded_date === dateStr).length);
+          dataTelat.push(telat.filter(a => a.recorded_date === dateStr).length);
+        }
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const COL_HADIR = isDark ? '#3D8475' : '#2D6A5A';
+        const COL_TELAT = isDark ? '#D9A24E' : '#B5843D';
+        const COL_GRID = isDark ? 'rgba(242,237,228,0.12)' : '#EDE7DA';
+        const COL_TICK = isDark ? '#F2EDE4' : '#7A8B88';
+
+        if (trenChart) trenChart.destroy();
+
+        const ctx = document.getElementById('trenChart').getContext('2d');
+        trenChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Hadir',
+                data: dataHadir,
+                borderColor: COL_HADIR,
+                backgroundColor: COL_HADIR + '22',
+                tension: 0.3,
+                fill: true,
+                pointRadius: 2,
+                borderWidth: 2,
+              },
+              {
+                label: 'Terlambat',
+                data: dataTelat,
+                borderColor: COL_TELAT,
+                backgroundColor: COL_TELAT + '22',
+                tension: 0.3,
+                fill: false,
+                pointRadius: 2,
+                borderWidth: 2,
+              },
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: true, position: 'top', labels: { color: COL_TICK, font: { size: 12 } } },
+              tooltip: {
+                backgroundColor: '#1F3A38',
+                titleColor: '#F2EDE4',
+                bodyColor: '#F2EDE4',
+                padding: 10,
+                cornerRadius: 8,
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: { color: COL_GRID, drawBorder: false },
+                ticks: { color: COL_TICK, stepSize: 1, precision: 0 }
+              },
+              x: {
+                grid: { color: COL_GRID, drawBorder: false },
+                ticks: { color: COL_TICK, maxRotation: 0 }
+              }
+            }
+          }
+        });
+      }
+
+      // ===== TABEL PER GURU =====
+      function renderGuruTable(validAtt, telat, izinSakit) {
+        const tbody = document.getElementById('guruTableBody');
+
+        if (guruList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;">Belum ada guru aktif.</td></tr>`;
+          return;
+        }
+
+        const rows = guruList.map(g => {
+          const hadir = validAtt.filter(a => a.user_id === g.id).length;
+          const telatG = telat.filter(a => a.user_id === g.id).length;
+          const izinG = izinSakit.filter(a => a.user_id === g.id && a.izin_type === 'izin').length;
+          const sakitG = izinSakit.filter(a => a.user_id === g.id && a.izin_type === 'sakit').length;
+          const totalHari = hadir + izinG + sakitG;
+          const persen = totalHari > 0 ? Math.round((hadir / totalHari) * 100) : 0;
+          return { ...g, hadir, telat: telatG, izin: izinG, sakit: sakitG, persen };
+        });
+
+        // Sort by persen desc
+        rows.sort((a, b) => b.persen - a.persen);
+
+        document.getElementById('guruCount').textContent = `${guruList.length} guru aktif`;
+
+        tbody.innerHTML = rows.map(r => {
+          const persenColor = r.persen >= 90 ? 'var(--success)'
+                             : r.persen >= 75 ? 'var(--warning)'
+                             : 'var(--danger)';
+          return `
+            <tr>
+              <td><b>${r.nama_lengkap}</b></td>
+              <td>${r.nip || '-'}</td>
+              <td class="num">${r.hadir}</td>
+              <td class="num">${r.telat > 0 ? `<span style="color:var(--warning); font-weight:600;">${r.telat}</span>` : '0'}</td>
+              <td class="num">${r.izin}</td>
+              <td class="num">${r.sakit}</td>
+              <td class="num"><b style="color:${persenColor};">${r.persen}%</b></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // ===== HANDLER =====
+      monthInput.addEventListener('change', (e) => {
+        currentMonth = e.target.value || getMonthWIB();
+        loadAll();
+      });
+
+      document.getElementById('btnRefresh').addEventListener('click', loadAll);
+
+      await loadAll();
+    })();
+  </script>
+</body>
+</html>

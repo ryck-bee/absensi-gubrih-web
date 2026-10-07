@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Health — Absensi SDN Gubrih 1</title>
+  <meta name="author" content="Riko Putra Dwi Susanto">
+
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="apple-touch-icon" href="../img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/custom.css">
+  <script src="../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__brand">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="../img/logo.png" alt="Logo SDN Gubrih 1">
+        </span>
+        <span class="brand-word">SDN GUBRIH 1</span>
+      </div>
+
+      <nav class="sidebar__scroll" aria-label="Dashboard sections">
+        <div class="nav-group">
+          <p class="nav-group__label">Menu</p>
+          <a class="nav-link" href="../index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Overview</span>
+          </a>
+          <a class="nav-link" href="../riwayat-absen.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span>Riwayat Absen</span>
+          </a>
+          <a class="nav-link" href="../guru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Data Guru</span>
+          </a>
+          <a class="nav-link" href="../hari-libur.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+            <span>Hari Libur</span>
+          </a>
+          <a class="nav-link" href="../admin-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span>Riwayat Perubahan Admin</span>
+          </a>
+        </div>
+
+        <div class="nav-group" data-role="super-admin">
+          <p class="nav-group__label">Super Admin</p>
+          <a class="nav-link" href="debug-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M3 10h3M18 10h3M4 16h2M18 16h2M4 20l2-2M18 18l2 2M4 12l2 2M18 14l2-2"/></svg>
+            <span>Debug Log</span>
+          </a>
+          <a class="nav-link" href="device-management.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Device Management</span>
+          </a>
+          <a class="nav-link is-active" href="system-health.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            <span>System Health</span>
+          </a>
+          <a class="nav-link" href="statistik-ringkas.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+            <span>Statistik Ringkas</span>
+          </a>
+          <a class="nav-link" href="embedding-viewer.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span>Embedding Viewer</span>
+          </a>
+          <a class="nav-link" href="foto-raw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Foto Raw per User</span>
+          </a>
+          <a class="nav-link" href="backup-center.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M12 16v4M9 17l3 3 3-3"/></svg>
+            <span>Backup Center</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-btn topbar__menu" id="sidebarToggle" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+
+        <div class="searchbar" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" aria-label="Search Console" placeholder="Cari…">
+          <span class="kbd" aria-hidden="true">⌘K</span>
+        </div>
+
+        <div class="topbar__right">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          </button>
+
+          <div class="usermenu">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="icon-btn__dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifMenu" role="menu">
+              <div class="dropdown__head"><h4>Notifications</h4><a href="#">Mark all read</a></div>
+              <div class="dropdown__body"></div>
+              <div class="dropdown__foot"><a href="#">View all activity</a></div>
+            </div>
+          </div>
+
+          <div class="usermenu">
+            <button class="usermenu__btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar"></span>
+              <span class="usermenu__meta">
+                <b id="userNameTop"></b>
+                <small id="userRoleTop"></small>
+              </span>
+              <svg class="usermenu__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="dropdown dropdown--user" id="userMenu" role="menu">
+              <div class="dropdown__head">
+                <div>
+                  <h4 id="userNameDropdown"></h4>
+                  <p class="dropdown__email" id="userEmailDropdown"></p>
+                </div>
+              </div>
+              <div class="menu-list">
+                <a href="#" role="menuitem" class="is-danger" onclick="logout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="main">
+
+        <section class="pagehead" aria-label="Page header">
+          <div>
+            <p class="pagehead__crumbs"><a href="../index.html">SDN Gubrih 1</a> / System Health</p>
+            <h1>System Health</h1>
+            <p>Monitoring kondisi sistem secara keseluruhan.</p>
+          </div>
+          <div class="pagehead__actions">
+            <button class="btn btn--ghost" id="btnRefresh" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Status Cards -->
+        <section class="grid kpis" aria-label="Status metrics" style="margin-bottom:20px;">
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-accent" id="statusIcon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Status Supabase</p>
+              <div class="kpi__value" id="statStatus" style="font-size:1.2rem;">Memuat...</div>
+            </div>
+            <div class="kpi__row">
+              <span id="statStatusSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Absen Hari Ini</p>
+              <div class="kpi__value tnum" id="statAbsenToday">0</div>
+            </div>
+            <div class="kpi__row">
+              <span id="statAbsenSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Device Aktif 24 Jam</p>
+              <div class="kpi__value tnum" id="statDeviceActive">0</div>
+            </div>
+            <div class="kpi__row">
+              <span id="statDeviceSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi__top">
+              <span class="kpi__ic t-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+              </span>
+            </div>
+            <div>
+              <p class="kpi__label">Debug Log 24 Jam</p>
+              <div class="kpi__value tnum" id="statDebugLogs">0</div>
+            </div>
+            <div class="kpi__row">
+              <span id="statDebugSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- Tabel Statistik -->
+        <section class="card" aria-label="Statistik tabel">
+          <div class="card__head">
+            <div><h3>Statistik Tabel</h3><p>Jumlah baris per tabel di database.</p></div>
+          </div>
+          <div class="table-scroll">
+            <table class="dtable">
+              <thead>
+                <tr>
+                  <th scope="col">Tabel</th>
+                  <th scope="col">Deskripsi</th>
+                  <th class="th-right" scope="col">Jumlah Row</th>
+                </tr>
+              </thead>
+              <tbody id="tableStatsBody">
+                <tr><td colspan="3" style="text-align:center;padding:24px;">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="app-foot">
+        <span>© 2026 Absensi SDN Gubrih 1 · Riko Putra Dwi Susanto</span>
+        <nav class="app-foot__links" aria-label="Footer">
+          <a href="https://uicookies.com/downloads/console/">Lisensi Template (uiCookies)</a>
+        </nav>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    (async () => {
+      const session = await requireLogin();
+      if (!session) return;
+      initGlobalSearch();
+      initNotifDropdown();
+      applyRoleBasedSidebar();
+
+      const { data: myProfile } = await supabaseClient
+        .from('profiles')
+        .select('nama_lengkap, role')
+        .eq('id', session.user.id)
+        .single();
+
+      function avatarHtml(nama, size = 32) {
+        const initial = nama.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        const bg = `hsl(${hue}, 45%, 45%)`;
+        return `<span style="display:inline-grid;place-items:center;width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:#fff;font-weight:600;font-size:${size * 0.4}px;flex:0 0 auto;">${initial}</span>`;
+      }
+
+      if (myProfile) {
+        const nama = myProfile.nama_lengkap || 'Pengguna';
+        const role = myProfile.role === 'super_admin' ? 'Super Admin'
+                    : myProfile.role === 'admin_sekolah' ? 'Admin Sekolah'
+                    : 'Guru';
+        document.getElementById('userAvatar').innerHTML = avatarHtml(nama);
+        document.getElementById('userNameTop').textContent = nama;
+        document.getElementById('userRoleTop').textContent = role;
+        document.getElementById('userNameDropdown').textContent = nama;
+        document.getElementById('userEmailDropdown').textContent = session.user.email || '-';
+      }
+
+      function todayWIB() {
+        return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      }
+      function hoursAgoISO(h) {
+        const d = new Date();
+        d.setHours(d.getHours() - h);
+        return d.toISOString();
+      }
+
+      // ===== 1. PING SUPABASE =====
+      async function checkStatus() {
+        const t0 = performance.now();
+        const { error } = await supabaseClient
+          .from('sekolah')
+          .select('id', { count: 'exact', head: true })
+          .limit(1);
+        const latency = Math.round(performance.now() - t0);
+
+        const statusEl = document.getElementById('statStatus');
+        const subEl = document.getElementById('statStatusSub');
+        const iconEl = document.getElementById('statusIcon');
+
+        if (error) {
+          statusEl.textContent = '🔴 Offline';
+          statusEl.style.color = 'var(--danger)';
+          subEl.textContent = error.message;
+          iconEl.classList.remove('t-accent');
+          iconEl.classList.add('t-warning');
+        } else {
+          statusEl.textContent = '🟢 Online';
+          statusEl.style.color = 'var(--success)';
+          subEl.textContent = `Latency: ${latency}ms`;
+          iconEl.classList.remove('t-warning');
+          iconEl.classList.add('t-accent');
+        }
+      }
+
+      // ===== 2. ABSEN HARI INI =====
+      async function checkAbsenToday() {
+        const today = todayWIB();
+        const { count, error } = await supabaseClient
+          .from('attendance')
+          .select('id', { count: 'exact', head: true })
+          .eq('recorded_date', today)
+          .eq('status', 'VALID');
+
+        const el = document.getElementById('statAbsenToday');
+        const subEl = document.getElementById('statAbsenSub');
+
+        if (error) {
+          el.textContent = '—';
+          subEl.textContent = 'Error: ' + error.message;
+          return;
+        }
+
+        el.textContent = count ?? 0;
+        subEl.textContent = `Tanggal ${today}`;
+      }
+
+      // ===== 3. DEVICE AKTIF 24 JAM =====
+      async function checkDeviceActive() {
+        const since = hoursAgoISO(24);
+        const { data, error } = await supabaseClient
+          .from('session_logs')
+          .select('user_id')
+          .gte('started_at', since);
+
+        const el = document.getElementById('statDeviceActive');
+        const subEl = document.getElementById('statDeviceSub');
+
+        if (error) {
+          el.textContent = '—';
+          subEl.textContent = 'Error: ' + error.message;
+          return;
+        }
+
+        const uniqueUsers = new Set((data || []).map(d => d.user_id)).size;
+        el.textContent = uniqueUsers;
+        subEl.textContent = `${(data || []).length} sesi dalam 24 jam terakhir`;
+      }
+
+      // ===== 4. DEBUG LOG 24 JAM =====
+      async function checkDebugLogs() {
+        const since = hoursAgoISO(24);
+        const { count, error } = await supabaseClient
+          .from('debug_logs')
+          .select('id', { count: 'exact', head: true })
+          .gte('created_at', since);
+
+        const el = document.getElementById('statDebugLogs');
+        const subEl = document.getElementById('statDebugSub');
+
+        if (error) {
+          el.textContent = '—';
+          subEl.textContent = 'Error: ' + error.message;
+          return;
+        }
+
+        el.textContent = count ?? 0;
+        subEl.textContent = 'Dari semua device';
+      }
+
+      // ===== 5. STATISTIK TABEL =====
+      const TABLES = [
+        { name: 'profiles', label: 'Profil user (guru + admin)' },
+        { name: 'devices', label: 'Device terdaftar' },
+        { name: 'attendance', label: 'Record absensi' },
+        { name: 'session_logs', label: 'Log sesi absensi' },
+        { name: 'face_embeddings', label: 'Embedding wajah' },
+        { name: 'face_attempts', label: 'Log percobaan deteksi wajah' },
+        { name: 'gps_attempts', label: 'Log percobaan GPS' },
+        { name: 'hari_libur', label: 'Hari libur' },
+        { name: 'admin_logs', label: 'Log aksi admin' },
+        { name: 'debug_logs', label: 'Debug log dari HP guru' },
+      ];
+
+      async function loadTableStats() {
+        const tbody = document.getElementById('tableStatsBody');
+        tbody.innerHTML = '';
+
+        const results = await Promise.all(
+          TABLES.map(async (t) => {
+            const { count, error } = await supabaseClient
+              .from(t.name)
+              .select('id', { count: 'exact', head: true });
+            return { ...t, count, error };
+          })
+        );
+
+        tbody.innerHTML = results.map(r => {
+          const countStr = r.error
+            ? `<span style="color:var(--danger); font-size:0.8rem;">Error: ${r.error.message}</span>`
+            : `<b>${(r.count ?? 0).toLocaleString('id-ID')}</b>`;
+          return `
+            <tr>
+              <td><code style="font-size:0.85rem;">${r.name}</code></td>
+              <td style="color:var(--muted); font-size:0.85rem;">${r.label}</td>
+              <td class="num">${countStr}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // ===== LOAD ALL =====
+      async function loadAll() {
+        // Reset UI
+        document.getElementById('statStatus').textContent = 'Memuat...';
+        document.getElementById('statAbsenToday').textContent = '0';
+        document.getElementById('statDeviceActive').textContent = '0';
+        document.getElementById('statDebugLogs').textContent = '0';
+        document.getElementById('tableStatsBody').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:24px;">Memuat data...</td></tr>';
+
+        await Promise.all([
+          checkStatus(),
+          checkAbsenToday(),
+          checkDeviceActive(),
+          checkDebugLogs(),
+        ]);
+        await loadTableStats();
+      }
+
+      document.getElementById('btnRefresh').addEventListener('click', loadAll);
+
+      await loadAll();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embedding Viewer — Absensi SDN Gubrih 1</title>
+  <meta name="author" content="Riko Putra Dwi Susanto">
+
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="apple-touch-icon" href="../img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/custom.css">
+  <script src="../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__brand">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="../img/logo.png" alt="Logo SDN Gubrih 1">
+        </span>
+        <span class="brand-word">SDN GUBRIH 1</span>
+      </div>
+
+      <nav class="sidebar__scroll" aria-label="Dashboard sections">
+        <div class="nav-group">
+          <p class="nav-group__label">Menu</p>
+          <a class="nav-link" href="../index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Overview</span>
+          </a>
+          <a class="nav-link" href="../riwayat-absen.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span>Riwayat Absen</span>
+          </a>
+          <a class="nav-link" href="../guru.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Data Guru</span>
+          </a>
+          <a class="nav-link" href="../hari-libur.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+            <span>Hari Libur</span>
+          </a>
+          <a class="nav-link" href="../admin-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span>Riwayat Perubahan Admin</span>
+          </a>
+        </div>
+
+        <div class="nav-group" data-role="super-admin">
+          <p class="nav-group__label">Super Admin</p>
+          <a class="nav-link" href="debug-log.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M3 10h3M18 10h3M4 16h2M18 16h2M4 20l2-2M18 18l2 2M4 12l2 2M18 14l2-2"/></svg>
+            <span>Debug Log</span>
+          </a>
+          <a class="nav-link" href="device-management.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Device Management</span>
+          </a>
+          <a class="nav-link" href="system-health.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            <span>System Health</span>
+          </a>
+          <a class="nav-link" href="statistik-ringkas.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+            <span>Statistik Ringkas</span>
+          </a>
+          <a class="nav-link" href="filter-data.html" style="display:none;">
+            <span>Filter Data Global</span>
+          </a>
+          <a class="nav-link is-active" href="embedding-viewer.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span>Embedding Viewer</span>
+          </a>
+          <a class="nav-link" href="foto-raw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Foto Raw per User</span>
+          </a>
+          <a class="nav-link" href="backup-center.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M12 16v4M9 17l3 3 3-3"/></svg>
+            <span>Backup Center</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-btn topbar__menu" id="sidebarToggle" type="button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+
+        <div class="searchbar" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" aria-label="Search Console" placeholder="Cari…">
+          <span class="kbd" aria-hidden="true">⌘K</span>
+        </div>
+
+        <div class="topbar__right">
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          </button>
+
+          <div class="usermenu">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="icon-btn__dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifMenu" role="menu">
+              <div class="dropdown__head"><h4>Notifications</h4><a href="#">Mark all read</a></div>
+              <div class="dropdown__body"></div>
+              <div class="dropdown__foot"><a href="#">View all activity</a></div>
+            </div>
+          </div>
+
+          <div class="usermenu">
+            <button class="usermenu__btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar"></span>
+              <span class="usermenu__meta">
+                <b id="userNameTop"></b>
+                <small id="userRoleTop"></small>
+              </span>
+              <svg class="usermenu__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="dropdown dropdown--user" id="userMenu" role="menu">
+              <div class="dropdown__head">
+                <div>
+                  <h4 id="userNameDropdown"></h4>
+                  <p class="dropdown__email" id="userEmailDropdown"></p>
+                </div>
+              </div>
+              <div class="menu-list">
+                <a href="#" role="menuitem" class="is-danger" onclick="logout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="main">
+
+        <section class="pagehead" aria-label="Page header">
+          <div>
+            <p class="pagehead__crumbs"><a href="../index.html">SDN Gubrih 1</a> / Embedding Viewer</p>
+            <h1>Embedding Viewer</h1>
+            <p>Lihat vektor embedding 128-D per user — registrasi & learning.</p>
+          </div>
+        </section>
+
+        <!-- Dropdown User -->
+        <section class="card" style="margin-bottom:20px;">
+          <div class="card__body">
+            <label for="userSelect" style="display:block; font-size:0.85rem; font-weight:600; color:var(--ink); margin-bottom:8px;">
+              Pilih User
+            </label>
+            <select id="userSelect" class="input input--bare" style="width:100%; height:48px; font-size:0.95rem;">
+              <option value="">— Pilih user —</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Empty state -->
+        <section id="emptyBox">
+          <div class="card" style="padding:48px 24px; text-align:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" style="width:48px; height:48px; margin:0 auto 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <p style="color:var(--muted); font-size:0.9rem; margin:0;">Pilih user dulu untuk melihat embedding.</p>
+          </div>
+        </section>
+
+        <!-- Loading -->
+        <section id="loadingBox" style="display:none;">
+          <div class="card" style="padding:48px 24px; text-align:center;">
+            <div style="width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; margin:0 auto; animation:spin 0.8s linear infinite;"></div>
+            <p style="color:var(--muted); font-size:0.9rem; margin:12px 0 0;">Memuat data...</p>
+            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+          </div>
+        </section>
+
+        <!-- Konten -->
+        <section id="contentBox" style="display:none;">
+
+          <!-- Statistik -->
+          <section class="grid kpis" style="margin-bottom:20px;">
+            <article class="kpi">
+              <div class="kpi__top">
+                <span class="kpi__ic t-accent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </span>
+              </div>
+              <div>
+                <p class="kpi__label">Total Embedding</p>
+                <div class="kpi__value tnum" id="statTotal">0</div>
+              </div>
+              <div class="kpi__row">
+                <span id="statTotalSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+              </div>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi__top">
+                <span class="kpi__ic t-success">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+                </span>
+              </div>
+              <div>
+                <p class="kpi__label">Registrasi</p>
+                <div class="kpi__value tnum" id="statRegis">0</div>
+              </div>
+              <div class="kpi__row">
+                <span id="statRegisSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+              </div>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi__top">
+                <span class="kpi__ic t-info">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </span>
+              </div>
+              <div>
+                <p class="kpi__label">Learning</p>
+                <div class="kpi__value tnum" id="statLearning">0</div>
+              </div>
+              <div class="kpi__row">
+                <span id="statLearningSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+              </div>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi__top">
+                <span class="kpi__ic t-warning">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                </span>
+              </div>
+              <div>
+                <p class="kpi__label">Mode</p>
+                <div class="kpi__value tnum" id="statMode" style="font-size:1.2rem;">—</div>
+              </div>
+              <div class="kpi__row">
+                <span id="statModeSub" style="color:var(--muted); font-size:0.8rem;">—</span>
+              </div>
+            </article>
+          </section>
+
+          <!-- Distribusi nilai embedding -->
+          <section class="card" style="margin-bottom:20px;">
+            <div class="card__head">
+              <div><h3>Distribusi Nilai Embedding</h3><p id="chartSubtitle">Rata-rata per dimensi (0-127)</p></div>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <label style="font-size:0.8rem; color:var(--muted); display:flex; align-items:center; gap:6px;">
+                  <input type="radio" name="chartMode" value="avg" checked>
+                  <span>Rata-rata</span>
+                </label>
+                <label style="font-size:0.8rem; color:var(--muted); display:flex; align-items:center; gap:6px;">
+                  <input type="radio" name="chartMode" value="all">
+                  <span>Semua</span>
+                </label>
+              </div>
+            </div>
+            <div class="card__body">
+              <div class="chart-wrap" style="height:280px;">
+                <canvas id="embedChart" role="img" aria-label="Chart distribusi embedding"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tabel Embedding -->
+          <section class="card">
+            <div class="card__head">
+              <div><h3>Daftar Embedding</h3><p id="embCount">Memuat...</p></div>
+            </div>
+            <div class="table-scroll">
+              <table class="dtable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Sumber</th>
+                    <th scope="col">Mode</th>
+                    <th scope="col">Dibuat</th>
+                    <th scope="col">Device</th>
+                    <th class="th-right" scope="col">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="embTableBody">
+                  <tr><td colspan="6" style="text-align:center;padding:24px;">Memuat...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+        </section>
+
+      </main>
+
+      <footer class="app-foot">
+        <span>© 2026 Absensi SDN Gubrih 1 · Riko Putra Dwi Susanto</span>
+        <nav class="app-foot__links" aria-label="Footer">
+          <a href="https://uicookies.com/downloads/console/">Lisensi Template (uiCookies)</a>
+        </nav>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal Detail Embedding -->
+  <div id="detailModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.6); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); overflow-y:auto;">
+    <div style="position:relative; margin:40px auto; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); width:100%; max-width:760px; box-shadow:var(--shadow-lg);">
+      <div style="position:sticky; top:0; background:var(--surface); border-bottom:1px solid var(--border); padding:16px 20px; display:flex; justify-content:space-between; align-items:center; z-index:2; border-radius:var(--radius) var(--radius) 0 0;">
+        <div>
+          <h3 style="margin:0; font-size:1.05rem; color:var(--ink);" id="modalTitle">Detail Embedding</h3>
+          <p style="margin:2px 0 0; font-size:0.8rem; color:var(--muted);" id="modalSubtitle"></p>
+        </div>
+        <button class="icon-btn" id="btnCloseModal" type="button" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div style="padding:20px;">
+        <div style="margin-bottom:16px;">
+          <p style="font-size:0.8rem; color:var(--muted); margin:0 0 8px;">Nilai 128 dimensi:</p>
+          <div id="embValues" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; font-family:monospace; font-size:0.75rem;"></div>
+        </div>
+
+        <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+          <h4 style="font-size:0.85rem; color:var(--accent); margin:0 0 12px; text-transform:uppercase; letter-spacing:0.05em;">Hitung Euclidean Distance</h4>
+          <p style="font-size:0.8rem; color:var(--muted); margin:0 0 12px;">Bandingkan embedding ini dengan embedding lain dari user yang sama.</p>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="compareSelect" class="input input--bare" style="flex:1; height:42px;">
+              <option value="">— Pilih embedding pembanding —</option>
+            </select>
+            <button class="btn btn--primary" id="btnCompare" type="button">Hitung</button>
+          </div>
+          <p id="compareResult" style="font-size:0.9rem; margin:12px 0 0; min-height:24px;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (async () => {
+      const session = await requireLogin();
+      if (!session) return;
+      initGlobalSearch();
+      initNotifDropdown();
+      applyRoleBasedSidebar();
+
+      const { data: myProfile } = await supabaseClient
+        .from('profiles')
+        .select('nama_lengkap, role')
+        .eq('id', session.user.id)
+        .single();
+
+      function avatarHtml(nama, size = 32) {
+        const initial = nama.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        let hash = 0;
+        for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        const bg = `hsl(${hue}, 45%, 45%)`;
+        return `<span style="display:inline-grid;place-items:center;width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:#fff;font-weight:600;font-size:${size * 0.4}px;flex:0 0 auto;">${initial}</span>`;
+      }
+
+      if (myProfile) {
+        const nama = myProfile.nama_lengkap || 'Pengguna';
+        const role = myProfile.role === 'super_admin' ? 'Super Admin'
+                    : myProfile.role === 'admin_sekolah' ? 'Admin Sekolah'
+                    : 'Guru';
+        document.getElementById('userAvatar').innerHTML = avatarHtml(nama);
+        document.getElementById('userNameTop').textContent = nama;
+        document.getElementById('userRoleTop').textContent = role;
+        document.getElementById('userNameDropdown').textContent = nama;
+        document.getElementById('userEmailDropdown').textContent = session.user.email || '-';
+      }
+
+      function formatWIB(iso) {
+        if (!iso) return '—';
+        return new Date(iso).toLocaleString('id-ID', {
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit',
+          timeZone: 'Asia/Jakarta'
+        });
+      }
+
+      // Parse embedding: bisa Array, string JSON, atau {v: [...]}
+      function parseEmbedding(raw) {
+        if (!raw) return null;
+        if (Array.isArray(raw)) return raw;
+        if (typeof raw === 'string') {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) return parsed;
+            if (parsed && Array.isArray(parsed.v)) return parsed.v;
+            return null;
+          } catch { return null; }
+        }
+        if (raw && Array.isArray(raw.v)) return raw.v;
+        return null;
+      }
+
+      // Euclidean distance
+      function euclid(a, b) {
+        if (!a || !b || a.length !== b.length) return null;
+        let sum = 0;
+        for (let i = 0; i < a.length; i++) {
+          const d = a[i] - b[i];
+          sum += d * d;
+        }
+        return Math.sqrt(sum);
+      }
+
+      // ===== LOAD USERS =====
+      const userSelect = document.getElementById('userSelect');
+      let allUsers = [];
+      let currentUser = null;
+      let currentEmbeddings = [];
+      let embedChart = null;
+      let deviceMap = {};
+
+      const { data: users } = await supabaseClient
+        .from('profiles')
+        .select('id, nama_lengkap, nip, role')
+        .order('nama_lengkap', { ascending: true });
+
+      if (users) {
+        allUsers = users;
+        userSelect.innerHTML = '<option value="">— Pilih user —</option>' +
+          users.map(u => {
+            const roleLabel = u.role === 'super_admin' ? 'Super Admin'
+                            : u.role === 'admin_sekolah' ? 'Admin Sekolah'
+                            : 'Guru';
+            return `<option value="${u.id}">${u.nama_lengkap} · ${u.nip || '-'} · ${roleLabel}</option>`;
+          }).join('');
+      }
+
+      // ===== HANDLER PILIH USER =====
+      userSelect.addEventListener('change', async (e) => {
+        const uid = e.target.value;
+        if (!uid) {
+          showEmpty(true);
+          showContent(false);
+          showLoading(false);
+          return;
+        }
+        currentUser = allUsers.find(u => u.id === uid);
+        await loadEmbeddings(uid);
+      });
+
+      // ===== LOAD EMBEDDINGS =====
+      async function loadEmbeddings(userId) {
+        showEmpty(false);
+        showContent(false);
+        showLoading(true);
+
+        const { data, error } = await supabaseClient
+          .from('face_embeddings')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          showLoading(false);
+          alert('Gagal memuat embedding: ' + error.message);
+          return;
+        }
+
+        currentEmbeddings = (data || []).map(row => ({
+          ...row,
+          values: parseEmbedding(row.embedding)
+        }));
+
+        // Device map
+        const deviceIds = [...new Set(currentEmbeddings.map(e => e.device_id).filter(Boolean))];
+        deviceMap = {};
+        if (deviceIds.length > 0) {
+          const { data: devices } = await supabaseClient
+            .from('devices')
+            .select('id, brand, model')
+            .in('id', deviceIds);
+          deviceMap = Object.fromEntries((devices || []).map(d => [d.id, d]));
+        }
+
+        renderStats();
+        renderChart('avg');
+        renderTable();
+
+        showLoading(false);
+        showContent(true);
+      }
+
+      // ===== STATS =====
+      function renderStats() {
+        const total = currentEmbeddings.length;
+        const regis = currentEmbeddings.filter(e => e.source === 'registration').length;
+        const learning = currentEmbeddings.filter(e => e.source === 'learning').length;
+
+        // Mode breakdown
+        const modeCount = {};
+        currentEmbeddings.forEach(e => {
+          modeCount[e.mode] = (modeCount[e.mode] || 0) + 1;
+        });
+        const modeStr = Object.entries(modeCount).map(([k, v]) => `${k}: ${v}`).join(' · ');
+
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statTotalSub').textContent = total > 0 ? `${total} vektor 128-D` : 'Belum ada';
+
+        document.getElementById('statRegis').textContent = regis;
+        document.getElementById('statRegisSub').textContent = 'Dari registrasi awal';
+
+        document.getElementById('statLearning').textContent = learning;
+        document.getElementById('statLearningSub').textContent = 'Dari absen sukses';
+
+        document.getElementById('statMode').textContent = Object.keys(modeCount).length || '—';
+        document.getElementById('statModeSub').textContent = modeStr || 'Belum ada';
+      }
+
+      // ===== CHART =====
+      function renderChart(mode) {
+        const withValues = currentEmbeddings.filter(e => e.values && e.values.length === 128);
+
+        if (withValues.length === 0) {
+          if (embedChart) embedChart.destroy();
+          return;
+        }
+
+        const labels = Array.from({ length: 128 }, (_, i) => String(i));
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const COL_LINE = isDark ? '#3D8475' : '#2D6A5A';
+        const COL_GRID = isDark ? 'rgba(242,237,228,0.12)' : '#EDE7DA';
+        const COL_TICK = isDark ? '#F2EDE4' : '#7A8B88';
+
+        let datasets = [];
+
+        if (mode === 'avg') {
+          // Rata-rata per dimensi
+          const avg = [];
+          for (let i = 0; i < 128; i++) {
+            let sum = 0;
+            withValues.forEach(e => sum += e.values[i]);
+            avg.push(sum / withValues.length);
+          }
+          datasets.push({
+            label: `Rata-rata (n=${withValues.length})`,
+            data: avg,
+            borderColor: COL_LINE,
+            backgroundColor: COL_LINE + '22',
+            borderWidth: 1.5,
+            pointRadius: 0,
+            tension: 0.3,
+            fill: true,
+          });
+        } else {
+          // Semua embedding — max 10 biar nggak terlalu padat
+          const shown = withValues.slice(0, 10);
+          const colors = ['#2D6A5A', '#4A9482', '#B5843D', '#4A1F2C', '#7A8B88', '#3D8475', '#D9A24E', '#C9646E', '#6BA3CC', '#5A706D'];
+          shown.forEach((e, idx) => {
+            datasets.push({
+              label: e.source === 'registration' ? `Reg #${idx+1}` : `Learn #${idx+1}`,
+              data: e.values,
+              borderColor: colors[idx % colors.length],
+              backgroundColor: 'transparent',
+              borderWidth: 1,
+              pointRadius: 0,
+              tension: 0.3,
+              fill: false,
+            });
+          });
+        }
+
+        if (embedChart) embedChart.destroy();
+
+        const ctx = document.getElementById('embedChart').getContext('2d');
+        embedChart = new Chart(ctx, {
+          type: 'line',
+          data: { labels, datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: mode === 'all', position: 'top', labels: { color: COL_TICK, font: { size: 10 }, boxWidth: 12 } },
+              tooltip: {
+                backgroundColor: '#1F3A38',
+                titleColor: '#F2EDE4',
+                bodyColor: '#F2EDE4',
+                padding: 8,
+                cornerRadius: 6,
+                callbacks: {
+                  title: (items) => `Dimensi ${items[0].label}`,
+                  label: (item) => `${item.dataset.label}: ${item.parsed.y.toFixed(5)}`,
+                }
+              }
+            },
+            scales: {
+              y: {
+                grid: { color: COL_GRID, drawBorder: false },
+                ticks: { color: COL_TICK, maxTicksLimit: 6 }
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: COL_TICK, maxRotation: 0, autoSkip: true, maxTicksLimit: 16 }
+              }
+            }
+          }
+        });
+      }
+
+      document.querySelectorAll('input[name="chartMode"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+          if (e.target.checked) renderChart(e.target.value);
+        });
+      });
+
+      // ===== TABLE =====
+      function renderTable() {
+        const tbody = document.getElementById('embTableBody');
+
+        if (currentEmbeddings.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;">User ini belum punya embedding.</td></tr>`;
+          document.getElementById('embCount').textContent = '0 embedding';
+          return;
+        }
+
+        document.getElementById('embCount').textContent = `${currentEmbeddings.length} embedding`;
+
+        tbody.innerHTML = currentEmbeddings.map((e, idx) => {
+          const dev = e.device_id && deviceMap[e.device_id]
+            ? `${deviceMap[e.device_id].brand} ${deviceMap[e.device_id].model}`
+            : '—';
+          const sourcePill = e.source === 'registration'
+            ? '<span class="pill is-paid">Registrasi</span>'
+            : '<span class="pill is-shipped">Learning</span>';
+          const modePill = e.mode === 'glasses'
+            ? '<span class="pill is-pending">Kacamata</span>'
+            : '<span class="pill is-active">Non-Kacamata</span>';
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${sourcePill}</td>
+              <td>${modePill}</td>
+              <td>${formatWIB(e.created_at)}</td>
+              <td style="font-size:0.82rem;">${dev}</td>
+              <td class="num">
+                <button class="btn btn--ghost" style="padding:4px 10px; font-size:0.8rem;" data-detail="${idx}">Lihat</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        tbody.querySelectorAll('button[data-detail]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-detail'));
+            openModal(idx);
+          });
+        });
+      }
+
+      // ===== MODAL =====
+      const modal = document.getElementById('detailModal');
+
+      function openModal(idx) {
+        const e = currentEmbeddings[idx];
+        if (!e) return;
+
+        const dev = e.device_id && deviceMap[e.device_id]
+          ? `${deviceMap[e.device_id].brand} ${deviceMap[e.device_id].model}`
+          : '—';
+
+        document.getElementById('modalTitle').textContent = `Embedding #${idx + 1}`;
+        document.getElementById('modalSubtitle').textContent =
+          `${e.source === 'registration' ? 'Registrasi' : 'Learning'} · ${e.mode} · ${formatWIB(e.created_at)} · ${dev}`;
+
+        // Values grid
+        const valuesBox = document.getElementById('embValues');
+        if (e.values && e.values.length === 128) {
+          valuesBox.innerHTML = e.values.map((v, i) => `
+            <div style="padding:4px 6px; background:var(--surface-2); border-radius:4px; text-align:center;">
+              <div style="color:var(--muted); font-size:0.65rem;">[${i}]</div>
+              <div style="color:var(--ink);">${v.toFixed(4)}</div>
+            </div>
+          `).join('');
+        } else {
+          valuesBox.innerHTML = '<p style="color:var(--muted);">Data embedding tidak valid.</p>';
+        }
+
+        // Compare select
+        const compareSel = document.getElementById('compareSelect');
+        compareSel.innerHTML = '<option value="">— Pilih embedding pembanding —</option>' +
+          currentEmbeddings.map((other, i) => {
+            if (i === idx) return '';
+            return `<option value="${i}">#${i + 1} · ${other.source} · ${other.mode} · ${formatWIB(other.created_at)}</option>`;
+          }).join('');
+
+        document.getElementById('compareResult').textContent = '';
+
+        document.getElementById('btnCompare').onclick = () => {
+          const otherIdx = parseInt(compareSel.value);
+          if (isNaN(otherIdx)) {
+            document.getElementById('compareResult').textContent = 'Pilih embedding pembanding dulu.';
+            document.getElementById('compareResult').style.color = 'var(--muted)';
+            return;
+          }
+          const other = currentEmbeddings[otherIdx];
+          const dist = euclid(e.values, other.values);
+          if (dist == null) {
+            document.getElementById('compareResult').textContent = 'Gagal hitung — data tidak valid.';
+            document.getElementById('compareResult').style.color = 'var(--danger)';
+            return;
+          }
+
+          const threshold = e.mode === 'glasses' ? 0.80 : 0.75;
+          const match = dist < threshold;
+          document.getElementById('compareResult').innerHTML =
+            `<b>Distance: ${dist.toFixed(4)}</b> · Threshold: ${threshold} · <span style="color:${match ? 'var(--success)' : 'var(--danger)'}; font-weight:700;">${match ? 'MATCH ✓' : 'NO MATCH ✗'}</span>`;
+          document.getElementById('compareResult').style.color = 'var(--ink)';
+        };
+
+        modal.style.display = 'block';
+      }
+
+      document.getElementById('btnCloseModal').addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+          modal.style.display = 'none';
+        }
+      });
+
+      // ===== UI HELPERS =====
+      function showEmpty(show) { document.getElementById('emptyBox').style.display = show ? 'block' : 'none'; }
+      function showContent(show) { document.getElementById('contentBox').style.display = show ? 'block' : 'none'; }
+      function showLoading(show) { document.getElementById('loadingBox').style.display = show ? 'block' : 'none'; }
+
+      showEmpty(true);
+    })();
+  </script>
+</body>
+</html>

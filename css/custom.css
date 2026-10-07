@@ -279,3 +279,8 @@ html:not([data-user-role="super_admin"]) .nav-group[data-role="super-admin"] {
   line-height: 1.65;
   max-width: 520px;
 }
+
+/* Fix: header tabel rata kanan */
+.dtable thead th.th-right {
+  text-align: right;
+}
