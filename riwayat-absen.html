@@ -18,7 +18,7 @@
   <script src="js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -209,7 +209,6 @@
           </div>
         </section>
 
-        <!-- Modal Ubah Absen -->
         <div id="editModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:420px; box-shadow:var(--shadow-lg);">
             <h3 style="margin-bottom:16px;">Ubah Absen</h3>
@@ -233,7 +232,6 @@
           </div>
         </div>
 
-        <!-- Modal Tambah Izin -->
         <div id="izinModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:440px; box-shadow:var(--shadow-lg);">
             <h3 style="margin-bottom:16px;">Tambah Izin / Sakit</h3>
@@ -270,7 +268,6 @@
           </div>
         </div>
 
-        <!-- Modal Hapus Bulk -->
         <div id="bulkDeleteModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:420px; box-shadow:var(--shadow-lg);">
             <h3 style="margin-bottom:16px;">Hapus Izin Terpilih</h3>
@@ -287,11 +284,9 @@
           </div>
         </div>
 
-        <!-- Modal Print Bulanan -->
         <div id="printModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,11,22,0.5); backdrop-filter:blur(2px);">
           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:420px; box-shadow:var(--shadow-lg);">
             <h3 style="margin-bottom:16px;">Print Absen Bulanan</h3>
-
             <div class="field">
               <label for="printBulan">Bulan</label>
               <select id="printBulan" class="input input--bare">
@@ -309,12 +304,10 @@
                 <option value="12">Desember</option>
               </select>
             </div>
-
             <div class="field">
               <label for="printTahun">Tahun</label>
-              <input type="number" id="printTahun" class="input input--bare" min="2024" max="2030">
+              <input type="number" id="printTahun" class="input input--bare" min="2024" max="2180">
             </div>
-
             <div class="field">
               <label for="printSheet">Halaman</label>
               <select id="printSheet" class="input input--bare">
@@ -323,9 +316,7 @@
                 <option value="3">Keduanya (2 halaman)</option>
               </select>
             </div>
-
             <p id="printMsg" style="font-size:0.85rem; margin-bottom:12px; min-height:20px;"></p>
-
             <div style="display:flex; gap:8px; justify-content:flex-end;">
               <button class="btn btn--ghost" id="btnCancelPrint" type="button">Batal</button>
               <button class="btn btn--primary" id="btnSubmitPrint" type="button">Unduh Excel</button>
@@ -748,12 +739,20 @@
         URL.revokeObjectURL(url);
       });
 
-      // ===== PRINT BULANAN — pakai template.xlsx (ExcelJS) =====
+      // ================================================================
+      // ===== PRINT BULANAN — inject ke XML template (JSZip) ===========
+      // Match V ke guru berdasarkan NIP. Kalau NIP kosong (misal Silvi),
+      // fallback ke match nama: nama di template dicocokkan dengan nama
+      // di profiles (startsWith, case-insensitive).
+      // ================================================================
       const printModal = document.getElementById('printModal');
       const printBulan = document.getElementById('printBulan');
       const printTahun = document.getElementById('printTahun');
       const printSheet = document.getElementById('printSheet');
       const printMsg = document.getElementById('printMsg');
+
+      const NAMA_BULAN_UPPER = ['JANUARI','FEBRUARI','MARET','APRIL','MEI','JUNI','JULI','AGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DESEMBER'];
+      const NAMA_BULAN_LOWER = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'];
 
       const nowWIB = new Date();
       const nowBulanWIB = parseInt(nowWIB.toLocaleDateString('en-US', { timeZone: 'Asia/Jakarta', month: 'numeric' }));
@@ -771,34 +770,171 @@
         printModal.style.display = 'none';
       });
 
-      function cellText(v) {
-        if (v === null || v === undefined) return '';
-        if (typeof v === 'object') {
-          if (v.richText) return v.richText.map(r => r.text || '').join('');
-          if (v.text) return String(v.text);
-          if (v.result !== undefined) return String(v.result);
-          if (v.hyperlink) return String(v.text || v.hyperlink);
-          return '';
+      function colLetter(n) {
+        let s = '';
+        while (n > 0) {
+          const m = (n - 1) % 26;
+          s = String.fromCharCode(65 + m) + s;
+          n = Math.floor((n - 1) / 26);
         }
-        return String(v);
+        return s;
       }
 
-      async function generatePDF(bulan, tahun, sheetOption) {
-        // 1. Fetch template
-        const res = await fetch('assets/template.xlsx');
-        if (!res.ok) throw new Error('template.xlsx tidak ditemukan (status ' + res.status + ')');
-        const buf = await res.arrayBuffer();
+      function escapeXml(s) {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&apos;');
+      }
 
-        // 2. Load pakai ExcelJS
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(buf);
+      function setCell(xml, ref, value) {
+        const pattern = new RegExp(`<c r="${ref}"([^>]*?)(?:/>|>([\\s\\S]*?)</c>)`);
+        const match = xml.match(pattern);
+        if (!match) return xml;
 
-        // 3. Fetch data dari Supabase
+        const attrs = match[1] || '';
+        const styleMatch = attrs.match(/\bs="(\d+)"/);
+        const styleAttr = styleMatch ? ` s="${styleMatch[1]}"` : '';
+
+        let newCell;
+        if (value === null || value === undefined || value === '') {
+          newCell = `<c r="${ref}"${styleAttr}/>`;
+        } else if (typeof value === 'number') {
+          newCell = `<c r="${ref}"${styleAttr}><v>${value}</v></c>`;
+        } else {
+          newCell = `<c r="${ref}"${styleAttr} t="inlineStr"><is><t xml:space="preserve">${escapeXml(value)}</t></is></c>`;
+        }
+
+        const startIdx = match.index;
+        const endIdx = startIdx + match[0].length;
+        return xml.substring(0, startIdx) + newCell + xml.substring(endIdx);
+      }
+
+      function getCellText(xml, ref, sharedStrings) {
+        const pattern = new RegExp(`<c r="${ref}"([^>]*?)(?:/>|>([\\s\\S]*?)</c>)`);
+        const match = xml.match(pattern);
+        if (!match) return '';
+        const inner = match[2] || '';
+        const vMatch = inner.match(/<v>([^<]*)<\/v>/);
+        if (!vMatch) return '';
+        const v = vMatch[1];
+        const isShared = /\bt="s"/.test(match[1] || '');
+        if (isShared && sharedStrings) {
+          const idx = parseInt(v);
+          return sharedStrings[idx] || '';
+        }
+        return v;
+      }
+
+      function parseSharedStrings(xml) {
+        const arr = [];
+        const regex = /<si>([\s\S]*?)<\/si>/g;
+        let m;
+        while ((m = regex.exec(xml)) !== null) {
+          const inner = m[1];
+          const tMatch = inner.match(/<t[^>]*>([\s\S]*?)<\/t>/);
+          if (tMatch) arr.push(tMatch[1]);
+          else arr.push('');
+        }
+        return arr;
+      }
+
+      function extractNipDigits(nipText) {
+        return String(nipText || '').replace(/\D/g, '');
+      }
+
+      // Normalisasi nama: lowercase, hapus gelar & tanda baca.
+      // Contoh: "Silvi" → "silvi", "Silvia Indriati" → "silvia indriati".
+      function normalizeName(s) {
+        return String(s || '')
+          .toLowerCase()
+          .replace(/[^a-z\s]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      // Cek apakah nama template cocok dengan nama DB.
+      // Match kalau: sama persis, atau salah satu dimulai dengan yang lain
+      // (misal "Silvi" cocok dengan "Silvia Indriati").
+      function nameMatches(templateName, dbName) {
+        const a = normalizeName(templateName);
+        const b = normalizeName(dbName);
+        if (!a || !b) return false;
+        if (a === b) return true;
+        const aFirst = a.split(' ')[0];
+        const bFirst = b.split(' ')[0];
+        if (aFirst === bFirst) return true;
+        return false;
+      }
+
+      const NAME_ROWS = [14, 16, 18, 20, 22, 24, 26, 28, 30, 32];
+      const NIP_ROWS  = [15, 17, 19, 21, 23, 25, 27, 29, 31, 33];
+
+      function resolveUserId(templateName, nipDigits, nipToUser, profList) {
+        if (nipDigits && nipToUser[nipDigits]) return nipToUser[nipDigits];
+        const found = profList.find(p => nameMatches(templateName, p.nama_lengkap));
+        return found ? found.id : null;
+      }
+
+      function fillPnsAsnSheet(xml, attByUser, nipToUser, profList, bulan, tahun, daysInMonth, sharedStrings) {
+        const matched = new Set();
+
+        NAME_ROWS.forEach((nameRow, i) => {
+          const nipRow = NIP_ROWS[i];
+          const nipText = getCellText(xml, `B${nipRow}`, sharedStrings);
+          const nipDigits = extractNipDigits(nipText);
+          const templateName = getCellText(xml, `B${nameRow}`, sharedStrings);
+
+          const userId = resolveUserId(templateName, nipDigits, nipToUser, profList);
+          const dataDates = (userId && attByUser[userId]) || {};
+          if (userId && Object.keys(dataDates).length > 0) matched.add(userId);
+
+          for (let d = 1; d <= 31; d++) {
+            const col = colLetter(5 + d - 1);
+            const dateStr = `${tahun}-${String(bulan).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const val = (d <= daysInMonth && dataDates[dateStr]) ? dataDates[dateStr] : '';
+            xml = setCell(xml, `${col}${nameRow}`, val);
+          }
+        });
+
+        xml = setCell(xml, 'A9', `BAGIAN BULAN :  ${NAMA_BULAN_UPPER[bulan-1]}  ${tahun}`);
+        xml = setCell(xml, 'AG34', `Bondowoso, 31 ${NAMA_BULAN_UPPER[bulan-1]} ${tahun}`);
+
+        return { xml, matched };
+      }
+
+      function fillGttPttSheet(xml, attByUser, nipToUser, profList, bulan, tahun, daysInMonth, sharedStrings) {
+        const nameRow = 14;
+        const nipRow = 15;
+
+        const nipText = getCellText(xml, `B${nipRow}`, sharedStrings);
+        const nipDigits = extractNipDigits(nipText);
+        const templateName = getCellText(xml, `B${nameRow}`, sharedStrings);
+
+        const userId = resolveUserId(templateName, nipDigits, nipToUser, profList);
+        const dataDates = (userId && attByUser[userId]) || {};
+
+        for (let d = 1; d <= 31; d++) {
+          const col = colLetter(5 + d - 1);
+          const dateStr = `${tahun}-${String(bulan).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          const val = (d <= daysInMonth && dataDates[dateStr]) ? dataDates[dateStr] : '';
+          xml = setCell(xml, `${col}${nameRow}`, val);
+        }
+
+        xml = setCell(xml, 'A9', `BAGIAN BULAN  ${NAMA_BULAN_UPPER[bulan-1]}  ${tahun}`);
+
+        return xml;
+      }
+
+      async function generateAbsenExcel(bulan, tahun, sheetOption) {
         const daysInMonth = new Date(tahun, bulan, 0).getDate();
-        const startDate = `${tahun}-${String(bulan).padStart(2, '0')}-01`;
-        const endDate = `${tahun}-${String(bulan).padStart(2, '0')}-${String(daysInMonth).padStart(2, '0')}`;
+        const startDate = `${tahun}-${String(bulan).padStart(2,'0')}-01`;
+        const endDate = `${tahun}-${String(bulan).padStart(2,'0')}-${String(daysInMonth).padStart(2,'0')}`;
 
-        const [attRes, profRes] = await Promise.all([
+        const [tplRes, attRes, profRes] = await Promise.all([
+          fetch('assets/template.xlsx', { cache: 'no-store' }),
           supabaseClient.from('attendance')
             .select('user_id, recorded_date, is_izin, izin_type, status')
             .gte('recorded_date', startDate)
@@ -808,104 +944,71 @@
             .eq('role', 'guru').eq('aktif', true)
         ]);
 
+        if (!tplRes.ok) throw new Error('template.xlsx tidak ditemukan');
         if (attRes.error) throw new Error('Gagal ambil attendance: ' + attRes.error.message);
         if (profRes.error) throw new Error('Gagal ambil profiles: ' + profRes.error.message);
 
-        // 4. Map NIP → user_id, nama
-        const nipByUser = {};
-        const nameByNip = {};
-        (profRes.data || []).forEach(p => {
-          if (p.nip) {
-            const n = String(p.nip).replace(/\D/g, '');
-            if (n) {
-              nipByUser[p.id] = n;
-              nameByNip[n] = p.nama_lengkap;
-            }
-          }
+        const tplBuf = await tplRes.arrayBuffer();
+
+        const profList = profRes.data || [];
+
+        // NIP (digit only) → user_id
+        const nipToUser = {};
+        profList.forEach(p => {
+          const n = String(p.nip || '').replace(/\D/g, '');
+          if (n) nipToUser[n] = p.id;
         });
 
-        // 5. Map NIP → { 'YYYY-MM-DD': 'V'|'I'|'S' }
-        const attMap = {};
+        // user_id → { 'YYYY-MM-DD': 'V' | 'I' | 'S' }
+        const attByUser = {};
         (attRes.data || []).forEach(a => {
-          const nip = nipByUser[a.user_id];
-          if (!nip) return;
-          if (!attMap[nip]) attMap[nip] = {};
           let val = null;
           if (a.is_izin) {
             val = (a.izin_type === 'sakit') ? 'S' : 'I';
           } else if (a.status === 'VALID') {
             val = 'V';
           }
-          if (val) attMap[nip][a.recorded_date] = val;
+          if (!val) return;
+          if (!attByUser[a.user_id]) attByUser[a.user_id] = {};
+          attByUser[a.user_id][a.recorded_date] = val;
         });
 
-        // 6. Isi template
-        const matchedNips = new Set();
-        const SHEETS = ['PNS - ASN', 'GTT - PTT'];
+        const zip = await JSZip.loadAsync(tplBuf);
 
-        const BORDER_THIN = {
-          top:    { style: 'thin', color: { argb: 'FF000000' } },
-          left:   { style: 'thin', color: { argb: 'FF000000' } },
-          bottom: { style: 'thin', color: { argb: 'FF000000' } },
-          right:  { style: 'thin', color: { argb: 'FF000000' } }
-        };
+        const sharedStringsXml = await zip.file('xl/sharedStrings.xml').async('string');
+        const sharedStrings = parseSharedStrings(sharedStringsXml);
 
-        SHEETS.forEach(sheetName => {
-          const ws = workbook.getWorksheet(sheetName);
-          if (!ws) return;
+        let matchedCount = 0;
 
-          ws.eachRow((row) => {
-            const bCell = row.getCell(2);
-            const bStr = cellText(bCell.value).toUpperCase();
-            if (!bStr.includes('NIP')) return;
+        if (sheetOption === 1 || sheetOption === 3) {
+          let sheet1Xml = await zip.file('xl/worksheets/sheet1.xml').async('string');
+          const result = fillPnsAsnSheet(sheet1Xml, attByUser, nipToUser, profList, bulan, tahun, daysInMonth, sharedStrings);
+          zip.file('xl/worksheets/sheet1.xml', result.xml);
+          matchedCount = result.matched.size;
+        }
 
-            const nip = bStr.replace(/\D/g, '');
-            if (!nip) return;
+        if (sheetOption === 2 || sheetOption === 3) {
+          let sheet2Xml = await zip.file('xl/worksheets/sheet2.xml').async('string');
+          sheet2Xml = fillGttPttSheet(sheet2Xml, attByUser, nipToUser, profList, bulan, tahun, daysInMonth, sharedStrings);
+          zip.file('xl/worksheets/sheet2.xml', sheet2Xml);
+        }
 
-            const dates = attMap[nip];
-            if (!dates) return;
-
-            matchedNips.add(nip);
-
-            for (let day = 1; day <= daysInMonth; day++) {
-              const dateStr = `${tahun}-${String(bulan).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-              const val = dates[dateStr];
-              if (!val) continue;
-              const col = 5 + (day - 1);
-              const target = row.getCell(col);
-
-              // Simpan border lama, merge dengan border baru
-              const oldBorder = target.border || {};
-              target.value = val;
-              target.border = Object.assign({}, oldBorder, BORDER_THIN);
-            }
-          });
+        const outBlob = await zip.generateAsync({
+          type: 'blob',
+          mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          compression: 'DEFLATE'
         });
 
-        // 7. Deteksi guru baru
-        const newGurus = [];
-        Object.keys(attMap).forEach(nip => {
-          if (!matchedNips.has(nip)) {
-            newGurus.push({ nip, nama: nameByNip[nip] || '(?)' });
-          }
-        });
-
-        // 8. Write buffer & download
-        const outBuf = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([outBuf], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        });
-        const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(outBlob);
         const a = document.createElement('a');
-        const namaBulanFile = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'][bulan - 1];
         a.href = url;
-        a.download = `absen-${sheetOption === 3 ? 'lengkap' : 'sheet' + sheetOption}-${namaBulanFile}-${tahun}.xlsx`;
+        a.download = `absen-${sheetOption === 3 ? 'lengkap' : 'sheet' + sheetOption}-${NAMA_BULAN_LOWER[bulan-1]}-${tahun}.xlsx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        return { newGurus, matchedCount: matchedNips.size, filledCount: attRes.data.length };
+        return { matchedCount, filledCount: attRes.data.length };
       }
 
       document.getElementById('btnSubmitPrint').addEventListener('click', async () => {
@@ -913,7 +1016,7 @@
         const tahun = parseInt(printTahun.value);
         const sheetOption = parseInt(printSheet.value);
 
-        if (!bulan || !tahun || tahun < 2020 || tahun > 2100) {
+        if (!bulan || !tahun || tahun < 2020 || tahun > 2180) {
           printMsg.textContent = 'Isi bulan dan tahun dengan benar.';
           printMsg.style.color = 'var(--danger)';
           return;
@@ -925,12 +1028,8 @@
         printMsg.textContent = '';
 
         try {
-          const r = await generatePDF(bulan, tahun, sheetOption);
-          let msg = `File Excel terunduh. Buka di Excel → File → Export as PDF. (${r.matchedCount} guru diisi, ${r.filledCount} data absen.)`;
-          if (r.newGurus.length > 0) {
-            msg += ` ⚠ ${r.newGurus.length} guru baru nggak ada di template: ${r.newGurus.map(g => g.nama).join(', ')}`;
-          }
-          printMsg.textContent = msg;
+          const r = await generateAbsenExcel(bulan, tahun, sheetOption);
+          printMsg.textContent = `File Excel terunduh. (${r.matchedCount} guru dicocokkan, ${r.filledCount} data absen.)`;
           printMsg.style.color = 'var(--success)';
           setTimeout(() => { printModal.style.display = 'none'; }, 3500);
         } catch (e) {
