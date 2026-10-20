@@ -503,10 +503,10 @@
           window._registrasiCount = 0;
         }
 
-        // 3. Ambil Estimasi Learning (Mulai 5 Okt ATAU tanggal registrasi terbaru)
+        // 3. Ambil Estimasi Learning (Hitung dari Sesi Absen Sukses, BUKAN per Frame)
         let matchCount = 0;
         
-        const batasBawahGlobal = new Date('2026-10-05T00:00:00+06:00');
+        const batasBawahGlobal = new Date('2026-10-05T00:00:00+07:00');
         let finalStartDate = batasBawahGlobal;
 
         if (currentEmbeddings.length > 0) {
@@ -516,12 +516,14 @@
           }
         }
 
+        // KUNCI PERUBAHAN: Ambil dari tabel 'attendance' dan hitung yang VALID
         const { count } = await supabaseClient
-          .from('face_attempts')
+          .from('attendance')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', userId)
-          .eq('mfn_status', 'match')
-          .gte('attempted_at', finalStartDate.toISOString());
+          .eq('status', 'VALID')
+          .eq('is_izin', false) // Pastikan bukan absen izin
+          .gte('recorded_at', finalStartDate.toISOString());
 
         matchCount = count || 0;
         
