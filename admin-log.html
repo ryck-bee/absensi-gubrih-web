@@ -165,7 +165,15 @@
             <p>Log semua aksi admin. Tidak bisa dihapus.</p>
           </div>
           <div class="pagehead__actions">
-            <input type="date" id="filterDate" class="input input--bare" style="width:auto;">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <button class="btn btn--ghost" id="btnPrevDate" type="button" style="padding:0; width:36px; height:36px; display:grid; place-items:center;" title="Hari Sebelumnya">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <input type="date" id="filterDate" class="input input--bare" style="width:auto;">
+              <button class="btn btn--ghost" id="btnNextDate" type="button" style="padding:0; width:36px; height:36px; display:grid; place-items:center;" title="Hari Berikutnya">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
             <button class="btn btn--ghost" id="btnToday" type="button">Hari Ini</button>
           </div>
         </section>
@@ -372,6 +380,17 @@
         dateInput.value = currentDate;
         loadLogs();
       });
+
+      function shiftDate(days) {
+        const d = new Date(currentDate);
+        d.setDate(d.getDate() + days);
+        currentDate = d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+        dateInput.value = currentDate;
+        loadLogs(); // <--- INI DIPERBAIKI (sebelumnya loadAbsen)
+      }
+
+      document.getElementById('btnPrevDate').addEventListener('click', () => shiftDate(-1));
+      document.getElementById('btnNextDate').addEventListener('click', () => shiftDate(1));
 
       await loadLogs();
     })();

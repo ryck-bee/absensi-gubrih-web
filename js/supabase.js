@@ -11,7 +11,21 @@ async function getSession() {
 }
 
 async function requireLogin() {
-  const session = await getSession();
+  // 1. Coba ambil session
+  let { data: { session } } = await supabaseClient.auth.getSession();
+
+  // 2. Kalau null, tunggu sebentar (retry 5x, masing-masing 100ms)
+  // Ini buat nanganin race condition saat baru pindah halaman dari login.html
+  if (!session) {
+    for (let i = 0; i < 5; i++) {
+      await new Promise(r => setTimeout(r, 100));
+      const retry = await supabaseClient.auth.getSession();
+      session = retry.data.session;
+      if (session) break; // Kalau dapet, hentikan loop
+    }
+  }
+
+  // 3. Kalau setelah ditunggu tetap nggak ada, tendang ke login
   if (!session) {
     window.location.href = 'login.html';
     return null;

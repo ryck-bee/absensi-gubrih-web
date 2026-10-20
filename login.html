@@ -216,8 +216,15 @@
         return;
       }
 
-      await new Promise(r => setTimeout(r, 800));
-      window.location.href = 'index.html';
+      // Pastikan session beneran dapet dari response Supabase
+      if (data && data.session) {
+        // Redirect langsung tanpa setTimeout hack
+        window.location.href = 'index.html';
+      } else {
+        alert('Gagal mendapatkan sesi. Coba lagi.');
+        btn.disabled = false;
+        btn.textContent = 'Masuk';
+      }
     });
   </script>
 </body>

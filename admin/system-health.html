@@ -400,6 +400,7 @@
         { name: 'profiles', label: 'Profil user (guru + admin)' },
         { name: 'devices', label: 'Device terdaftar' },
         { name: 'attendance', label: 'Record absensi' },
+        { name: 'attendance_valid', label: 'Absen VALID + Foto + GPS (Bukan Izin)', custom: true },
         { name: 'session_logs', label: 'Log sesi absensi' },
         { name: 'face_embeddings', label: 'Embedding wajah' },
         { name: 'face_attempts', label: 'Log percobaan deteksi wajah' },
@@ -415,10 +416,23 @@
 
         const results = await Promise.all(
           TABLES.map(async (t) => {
-            const { count, error } = await supabaseClient
-              .from(t.name)
-              .select('id', { count: 'exact', head: true });
-            return { ...t, count, error };
+            if (t.custom) {
+              // Query Khusus: Valid, Bukan Izin, Ada Foto & GPS
+              const { count, error } = await supabaseClient
+                .from('attendance')
+                .select('id', { count: 'exact', head: true })
+                .eq('status', 'VALID')
+                .eq('is_izin', false)
+                .not('photo_url', 'is', null)
+                .not('distance_meters', 'is', null);
+              return { ...t, count, error };
+            } else {
+              // Query Standar
+              const { count, error } = await supabaseClient
+                .from(t.name)
+                .select('id', { count: 'exact', head: true });
+              return { ...t, count, error };
+            }
           })
         );
 
@@ -426,9 +440,13 @@
           const countStr = r.error
             ? `<span style="color:var(--danger); font-size:0.8rem;">Error: ${r.error.message}</span>`
             : `<b>${(r.count ?? 0).toLocaleString('id-ID')}</b>`;
+          
+          // Bikin baris custom jadi agak beda (opsional)
+          const rowStyle = r.custom ? 'background-color: rgba(45,106,90,0.05);' : '';
+
           return `
-            <tr>
-              <td><code style="font-size:0.85rem;">${r.name}</code></td>
+            <tr style="${rowStyle}">
+              <td><code style="font-size:0.85rem; font-weight:${r.custom ? 'bold' : 'normal'};">${r.name}</code></td>
               <td style="color:var(--muted); font-size:0.85rem;">${r.label}</td>
               <td class="num">${countStr}</td>
             </tr>

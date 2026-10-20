@@ -156,8 +156,16 @@
             <select id="filterGuru" class="input input--bare" style="width:auto; height:36px; padding:0 10px; font-size:0.85rem;">
               <option value="">Semua Guru</option>
             </select>
+            <div style="display:flex; align-items:center; gap:4px;">
+            <button class="btn btn--ghost" id="btnPrevDate" type="button" style="padding:0; width:36px; height:36px; display:grid; place-items:center;" title="Hari Sebelumnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
             <input type="date" id="filterDate" class="input input--bare" style="width:auto;">
-            <button class="btn btn--ghost" id="btnToday" type="button">Hari Ini</button>
+            <button class="btn btn--ghost" id="btnNextDate" type="button" style="padding:0; width:36px; height:36px; display:grid; place-items:center;" title="Hari Berikutnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <button class="btn btn--ghost" id="btnToday" type="button">Hari Ini</button>
             <button class="btn btn--ghost" id="btnJadwalIzin" type="button" style="display:none;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
               <span>Jadwal Izin</span>
@@ -716,6 +724,16 @@
         dateInput.value = currentDate;
         loadAbsen();
       });
+      function shiftDate(days) {
+        const d = new Date(currentDate);
+        d.setDate(d.getDate() + days);
+        currentDate = d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+        dateInput.value = currentDate;
+        loadAbsen();
+      }
+
+      document.getElementById('btnPrevDate').addEventListener('click', () => shiftDate(-1));
+      document.getElementById('btnNextDate').addEventListener('click', () => shiftDate(1));
 
       document.getElementById('btnExport').addEventListener('click', () => {
         if (cachedData.length === 0) { alert('Nggak ada data buat diekspor.'); return; }
