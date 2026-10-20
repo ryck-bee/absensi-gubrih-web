@@ -481,13 +481,14 @@
           values: parseEmbedding(row.embedding)
         }));
 
-        // 2. Ambil Total Sesi Registrasi Historis (Dari session_logs)
+        // 2. Ambil Total Sesi Registrasi Historis (MULAI 3 OKTOBER)
         const { count: regCount } = await supabaseClient
           .from('session_logs')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', userId)
           .is('gps_result', null)
-          .is('mtcnn_ms_first', null);
+          .is('mtcnn_ms_first', null)
+          .gte('started_at', '2026-10-03T00:00:00+07:00'); // <--- INI YANG KELUPAAN
           
         window._registrasiCount = regCount || 0;
 
@@ -500,11 +501,13 @@
             .select('*', { count: 'exact', head: true })
             .eq('user_id', userId)
             .eq('mfn_status', 'match')
-            .gte('attempted_at', lastRegisDate);
+            .gte('attempted_at', lastRegisDate); 
 
           matchCount = count || 0;
         }
-        window._learningCount = matchCount > 30 ? 30 : matchCount; // Cap di 30
+        
+        // Batasi maksimal 30 sesuai aturan FIFO di HP
+        window._learningCount = matchCount > 30 ? 30 : matchCount; 
 
         // Device map
         const deviceIds = [...new Set(currentEmbeddings.map(e => e.device_id).filter(Boolean))];
