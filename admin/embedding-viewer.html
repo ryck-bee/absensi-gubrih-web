@@ -458,7 +458,7 @@
       });
 
       // ===== LOAD EMBEDDINGS =====
-      async function loadEmbeddings(userId) {
+            async function loadEmbeddings(userId) {
         showEmpty(false);
         showContent(false);
         showLoading(true);
@@ -479,6 +479,26 @@
           ...row,
           values: parseEmbedding(row.embedding)
         }));
+
+        // --- LOGIC BARU: HITUNG LEARNING ---
+        let matchCount = 0;
+        if (currentEmbeddings.length > 0) {
+          // Ambil tanggal registrasi terbaru (Titik Nol)
+          const lastRegisDate = currentEmbeddings[0].created_at; 
+
+          // Hitung berapa kali match setelah tanggal tersebut
+          const { count } = await supabaseClient
+            .from('face_attempts')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .eq('mfn_status', 'match')
+            .gte('attempted_at', lastRegisDate);
+
+          matchCount = count || 0;
+        }
+        
+        // Simpan hasil hitungan buat dipake di renderStats
+        window._learningCount = matchCount;
 
         // Device map
         const deviceIds = [...new Set(currentEmbeddings.map(e => e.device_id).filter(Boolean))];
@@ -502,8 +522,12 @@
       // ===== STATS =====
       function renderStats() {
         const total = currentEmbeddings.length;
-        const regis = currentEmbeddings.filter(e => e.source === 'registration').length;
-        const learning = currentEmbeddings.filter(e => e.source === 'learning').length;
+        
+        // LOGIC BARU: Registrasi = Total Embedding (karena semuanya dari registrasi)
+        const regis = total; 
+        
+        // LOGIC BARU: Learning = Hasil dari query face_attempts tadi
+        const learning = window._learningCount || 0;
 
         // Mode breakdown
         const modeCount = {};
@@ -516,10 +540,11 @@
         document.getElementById('statTotalSub').textContent = total > 0 ? `${total} vektor 128-D` : 'Belum ada';
 
         document.getElementById('statRegis').textContent = regis;
-        document.getElementById('statRegisSub').textContent = 'Dari registrasi awal';
+        document.getElementById('statRegisSub').textContent = 'Sampel aktif di server';
 
-        document.getElementById('statLearning').textContent = learning;
-        document.getElementById('statLearningSub').textContent = 'Dari absen sukses';
+        // Tampilkan learning (maksimal 30, tapi ini ngikutin logic data aktual)
+        document.getElementById('statLearning').textContent = learning > 30 ? '30+' : learning;
+        document.getElementById('statLearningSub').textContent = 'Estimasi sampel lokal';
 
         document.getElementById('statMode').textContent = Object.keys(modeCount).length || '—';
         document.getElementById('statModeSub').textContent = modeStr || 'Belum ada';

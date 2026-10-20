@@ -407,9 +407,21 @@
 
         for (let d = 1; d <= lastDay; d++) {
           const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const dateObj = new Date(year, month - 1, d);
+          
+          const countHadir = validAtt.filter(a => a.recorded_date === dateStr).length;
+          const countTelat = telat.filter(a => a.recorded_date === dateStr).length;
+
+          // 1. Skip hari Minggu (0 = Minggu)
+          if (dateObj.getDay() === 0) continue;
+          
+          // 2. Skip hari yang bener-bener kosong (libur, atau belum ada absen)
+          if (countHadir === 0 && countTelat === 0) continue;
+
+          // Kalau lolos filter di atas, baru masukin ke grafik
           labels.push(String(d));
-          dataHadir.push(validAtt.filter(a => a.recorded_date === dateStr).length);
-          dataTelat.push(telat.filter(a => a.recorded_date === dateStr).length);
+          dataHadir.push(countHadir);
+          dataTelat.push(countTelat);
         }
 
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
