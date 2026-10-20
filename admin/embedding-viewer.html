@@ -458,11 +458,12 @@
       });
 
       // ===== LOAD EMBEDDINGS =====
-            async function loadEmbeddings(userId) {
+      async function loadEmbeddings(userId) {
         showEmpty(false);
         showContent(false);
         showLoading(true);
 
+        // 1. Ambil sampel yang SEKARANG aktif (3 atau 6)
         const { data, error } = await supabaseClient
           .from('face_embeddings')
           .select('*')
@@ -480,13 +481,20 @@
           values: parseEmbedding(row.embedding)
         }));
 
-        // --- LOGIC BARU: HITUNG LEARNING ---
+        // 2. Ambil Total Sesi Registrasi Historis (Dari session_logs)
+        const { count: regCount } = await supabaseClient
+          .from('session_logs')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .is('gps_result', null)
+          .is('mtcnn_ms_first', null);
+          
+        window._registrasiCount = regCount || 0;
+
+        // 3. Ambil Estimasi Learning (Match setelah tanggal registrasi terakhir)
         let matchCount = 0;
         if (currentEmbeddings.length > 0) {
-          // Ambil tanggal registrasi terbaru (Titik Nol)
           const lastRegisDate = currentEmbeddings[0].created_at; 
-
-          // Hitung berapa kali match setelah tanggal tersebut
           const { count } = await supabaseClient
             .from('face_attempts')
             .select('*', { count: 'exact', head: true })
@@ -496,9 +504,7 @@
 
           matchCount = count || 0;
         }
-        
-        // Simpan hasil hitungan buat dipake di renderStats
-        window._learningCount = matchCount;
+        window._learningCount = matchCount > 30 ? 30 : matchCount; // Cap di 30
 
         // Device map
         const deviceIds = [...new Set(currentEmbeddings.map(e => e.device_id).filter(Boolean))];
@@ -522,14 +528,9 @@
       // ===== STATS =====
       function renderStats() {
         const total = currentEmbeddings.length;
-        
-        // LOGIC BARU: Registrasi = Total Embedding (karena semuanya dari registrasi)
-        const regis = total; 
-        
-        // LOGIC BARU: Learning = Hasil dari query face_attempts tadi
+        const regis = window._registrasiCount || 0; 
         const learning = window._learningCount || 0;
 
-        // Mode breakdown
         const modeCount = {};
         currentEmbeddings.forEach(e => {
           modeCount[e.mode] = (modeCount[e.mode] || 0) + 1;
@@ -537,14 +538,13 @@
         const modeStr = Object.entries(modeCount).map(([k, v]) => `${k}: ${v}`).join(' · ');
 
         document.getElementById('statTotal').textContent = total;
-        document.getElementById('statTotalSub').textContent = total > 0 ? `${total} vektor 128-D` : 'Belum ada';
+        document.getElementById('statTotalSub').textContent = total > 0 ? `${total} vektor aktif` : 'Belum ada';
 
         document.getElementById('statRegis').textContent = regis;
-        document.getElementById('statRegisSub').textContent = 'Sampel aktif di server';
+        document.getElementById('statRegisSub').textContent = 'Total sesi historis'; // Ganti teksnya
 
-        // Tampilkan learning (maksimal 30, tapi ini ngikutin logic data aktual)
-        document.getElementById('statLearning').textContent = learning > 30 ? '30+' : learning;
-        document.getElementById('statLearningSub').textContent = 'Estimasi sampel lokal';
+        document.getElementById('statLearning').textContent = learning;
+        document.getElementById('statLearningSub').textContent = 'Estimasi lokal (maks 30)';
 
         document.getElementById('statMode').textContent = Object.keys(modeCount).length || '—';
         document.getElementById('statModeSub').textContent = modeStr || 'Belum ada';
