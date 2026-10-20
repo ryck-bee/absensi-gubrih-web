@@ -463,7 +463,7 @@
         showContent(false);
         showLoading(true);
 
-        // 1. Ambil sampel yang SEKARANG aktif (3 atau 6)
+        // 1. Ambil sampel yang SEKARANG aktif
         const { data, error } = await supabaseClient
           .from('face_embeddings')
           .select('*')
@@ -481,32 +481,51 @@
           values: parseEmbedding(row.embedding)
         }));
 
-        // 2. Ambil Total Sesi Registrasi Historis (MULAI 3 OKTOBER)
-        const { count: regCount } = await supabaseClient
+        // 2. Ambil Total Sesi Registrasi Historis (Mulai 3 Okt, Buang 4 Okt)
+        const { data: regData, error: regError } = await supabaseClient
           .from('session_logs')
-          .select('*', { count: 'exact', head: true })
+          .select('started_at')
           .eq('user_id', userId)
+          .eq('final_status', 'success')
           .is('gps_result', null)
           .is('mtcnn_ms_first', null)
-          .gte('started_at', '2026-10-03T00:00:00+07:00'); // <--- INI YANG KELUPAAN
-          
-        window._registrasiCount = regCount || 0;
+          .gte('started_at', '2026-10-03T00:00:00+06:00'); 
 
-        // 3. Ambil Estimasi Learning (Match setelah tanggal registrasi terakhir)
-        let matchCount = 0;
-        if (currentEmbeddings.length > 0) {
-          const lastRegisDate = currentEmbeddings[0].created_at; 
-          const { count } = await supabaseClient
-            .from('face_attempts')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', userId)
-            .eq('mfn_status', 'match')
-            .gte('attempted_at', lastRegisDate); 
-
-          matchCount = count || 0;
+        if (!regError && regData) {
+          // Filter manual: Buang tanggal 4 Oktober
+          const filteredReg = regData.filter(row => {
+             const d = new Date(row.started_at);
+             const dateStr = d.toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' }); 
+             return dateStr !== '2026-10-04';
+          });
+          window._registrasiCount = filteredReg.length;
+        } else {
+          window._registrasiCount = 0;
         }
+
+        // 3. Ambil Estimasi Learning (Mulai 5 Okt ATAU tanggal registrasi terbaru)
+        let matchCount = 0;
         
-        // Batasi maksimal 30 sesuai aturan FIFO di HP
+        const batasBawahGlobal = new Date('2026-10-05T00:00:00+06:00');
+        let finalStartDate = batasBawahGlobal;
+
+        if (currentEmbeddings.length > 0) {
+          const lastRegisDate = new Date(currentEmbeddings[0].created_at);
+          if (lastRegisDate > batasBawahGlobal) {
+            finalStartDate = lastRegisDate;
+          }
+        }
+
+        const { count } = await supabaseClient
+          .from('face_attempts')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .eq('mfn_status', 'match')
+          .gte('attempted_at', finalStartDate.toISOString());
+
+        matchCount = count || 0;
+        
+        // Cap maksimal 30
         window._learningCount = matchCount > 30 ? 30 : matchCount; 
 
         // Device map
